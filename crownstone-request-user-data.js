@@ -3,18 +3,16 @@ module.exports = function(RED) {
         RED.nodes.createNode(this,config);
         var node = this;
 
+        // Libraries
         const csLib = require("crownstone-cloud")
 
+        // Retreive the cloud object from global context
         var globalContext = this.context().global;
         var cloud = globalContext.get("crownstoneCloud");
 
+        // Input event
         node.on('input', function(msg) {
-            console.log("Get cloud localy");
-            
-
             let myUser = cloud.me();
-            //console.log("User:");
-            //console.log(myUser);
             msg.payload = myUser;
 
             node.send(msg);
