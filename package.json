@@ -1,7 +1,7 @@
 {
-  "name": "node-red-crownstone-api-lib-test-node",
+  "name": "node-red-contrib-crownstone-rest-api",
   "version": "1.0.0",
-  "description": "Delay node",
+  "description": "Crownstone REST API",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,8 +11,8 @@
   "node-red" : {
     "nodes": {
       "crownstone-authenticate": "crownstone-authenticate.js",
-      "crownstone-request-user-data": "crownstone-authenticate.js",
-      "crownstone-switch-crownstone": "crownstone-authenticate.js"
+      "crownstone-request-user-data": "crownstone-request-user-data.js",
+      "crownstone-switch-crownstone": "crownstone-switch-crownstone.js"
     }
   }
 }

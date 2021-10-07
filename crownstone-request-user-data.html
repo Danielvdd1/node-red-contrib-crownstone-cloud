@@ -1,0 +1,26 @@
+<script type="text/javascript">
+    RED.nodes.registerType('crownstone request user data',{
+        category: 'experimental',
+        color: '#FFFFFF',
+        defaults: {
+            name: {value:""}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "icons/crownstone_logo_black.svg",
+        label: function() {
+            return this.name||"Crownstone request user data";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="crownstone request user data">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="crownstone request user data">
+    <p>Crownstone API lib test</p>
+</script>
