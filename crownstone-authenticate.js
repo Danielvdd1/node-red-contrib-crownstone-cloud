@@ -5,13 +5,13 @@ module.exports = function(RED) {
 
         const csLib = require("crownstone-cloud")
         const cloud = new csLib.CrownstoneCloud();
+        var CryptoJS = require("crypto-js");
 
         var email = this.credentials.email;
         var password = this.credentials.password;
 
         async function loginUser() {
-            //await cloud.login("danielvdd1.DVDD@gmail.com", "w_hbDa084PO!!MW");
-            await cloud.login(email, password);
+            await cloud.loginHashed(email, CryptoJS.SHA1(password).toString());
         }
         loginUser();
 
