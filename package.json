@@ -1,0 +1,18 @@
+{
+  "name": "node-red-crownstone-api-lib-test-node",
+  "version": "1.0.0",
+  "description": "Delay node",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Daniël",
+  "license": "ISC",
+  "node-red" : {
+    "nodes": {
+      "crownstone-authenticate": "crownstone-authenticate.js",
+      "crownstone-request-user-data": "crownstone-authenticate.js",
+      "crownstone-switch-crownstone": "crownstone-authenticate.js"
+    }
+  }
+}

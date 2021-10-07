@@ -1,0 +1,114 @@
+<script type="text/javascript">
+    RED.nodes.registerType('crownstone authenticate',{
+        category: 'experimental',
+        color: '#FFFFFF',
+        defaults: {
+            name: {value:""}
+        },
+        credentials: {
+            email: {type:"text"},
+            password: {type:"password"}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "icons/crownstone_logo_black.svg",
+        label: function() {
+            return this.name||"Crownstone authenticate";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="crownstone authenticate">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-email"><i class="fa fa-tag"></i> Email</label>
+        <input type="text" id="node-input-email">
+    </div>
+    <div class="form-row">
+        <label for="node-input-password"><i class="fa fa-tag"></i> Password</label>
+        <input type="password" id="node-input-password">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="crownstone authenticate">
+    <p>Crownstone API lib test</p>
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    RED.nodes.registerType('crownstone request user data',{
+        category: 'experimental',
+        color: '#FFFFFF',
+        defaults: {
+            name: {value:""}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "icons/crownstone_logo_black.svg",
+        label: function() {
+            return this.name||"Crownstone request user data";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="crownstone request user data">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="crownstone request user data">
+    <p>Crownstone API lib test</p>
+</script>
+
+
+
+
+
+<script type="text/javascript">
+    RED.nodes.registerType('crownstone switch crownstone',{
+        category: 'experimental',
+        color: '#FFFFFF',
+        defaults: {
+            name: {value:""},
+            crownstone: {value:""},
+            state: {value:false},
+        },
+        inputs:1,
+        outputs:1,
+        icon: "icons/crownstone_logo_black.svg",
+        label: function() {
+            return this.name||"Crownstone switch crownstone";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="crownstone switch crownstone">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-crownstone"><i class="fa fa-tag"></i> Crownstone name</label>
+        <input type="text" id="node-input-crownstone" placeholder="Crownstone name">
+    </div>
+    <div class="form-row form-row-file-write-options">
+        <label for="node-input-state"><i class="fa fa-tag"></i> Crownstone name</label>
+        <input type="checkbox" id="node-input-state" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-state" style="width: 70%;">On/Off</label>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="crownstone switch crownstone">
+    <p>Crownstone API lib test</p>
+</script>
