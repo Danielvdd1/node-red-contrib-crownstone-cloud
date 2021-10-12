@@ -12,6 +12,17 @@
         icon: "icons/crownstone_logo_black.svg",
         label: function() {
             return this.name||"Crownstone switch crownstone";
+        },
+        oneditprepare: function() {
+            var node = this;
+
+            $.getJSON('crownstones/' + node.id,function(data) {
+                console.log(data); // Debug
+
+                data.forEach(crownstone => {
+                    $('#node-input-crownstone').append(`<option value="${crownstone.id}">${crownstone.name}</option>`);
+                });
+            });
         }
     });
 </script>
@@ -22,12 +33,20 @@
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
 
+    <!--
     <div class="form-row">
         <label for="node-input-crownstone"><i class="fa fa-tag"></i> Crownstone name</label>
         <input type="text" id="node-input-crownstone" placeholder="Crownstone name">
     </div>
-    <div class="form-row form-row-file-write-options">
-        <label for="node-input-state"><i class="fa fa-tag"></i> Crownstone name</label>
+    -->
+    <div class="form-row form-row-crownstone-name">
+        <label for="node-input-crownstone"><i class="fa fa-flag"></i> Crownstone name</span></label>
+        <select type="text" id="node-input-crownstone" style="width: 250px;">
+        </select>
+    </div>
+
+    <div class="form-row form-row-crownstone-state">
+        <label for="node-input-state"><i class="fa fa-tag"></i> switch state</label>
         <input type="checkbox" id="node-input-state" style="display: inline-block; width: auto; vertical-align: top;">
         <label for="node-input-state" style="width: 70%;">On/Off</label>
     </div>

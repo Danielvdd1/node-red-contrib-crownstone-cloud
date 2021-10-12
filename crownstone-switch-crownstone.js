@@ -7,19 +7,23 @@ module.exports = function(RED) {
         const csLib = require("crownstone-cloud")
 
         // Input field values
-        var crownstoneName = config.crownstone;
+        var crownstoneId = config.crownstone;
         var crownstoneState = config.state;
 
         // Retreive the cloud object from global context
         var globalContext = this.context().global;
         var cloud = globalContext.get("crownstoneCloud");
 
-        /*async function requestCrownstoneId(name) {
-            return "6135bace60260600040a98cc";
+        /*
+        async function requestCrownstones() {
+            console.log("Debug: Crownstones");
+            let cs = await cloud.crownstones();
+            console.log(cs);
+            // Lambda expression to filter the crownstones on their name and return only the id's
+            //console.log(cs.map(cs => ({"name":cs.name, "id":cs.id})));
         }
-        var crownstone = requestCrownstoneId(crownstoneName);
+        requestCrownstones().catch((e) => { console.log("There was a problem requesting Crownstone information at the beginning of the code:", e); });
         */
-
 
         
         // Input event
@@ -30,47 +34,18 @@ module.exports = function(RED) {
 
             async function asyncFunciton() {
 
-                let crownstones = await cloud.crownstones();
+                let cs = await cloud.crownstones();
+                console.log(cs);
+                msg.crownstones = cs; // Debug
 
-                // Lambda expression to filter the crownstones on their name and return only the id's
-                let crownstones2 = crownstones.filter(cs => cs.name === crownstoneName).map(cs2 => cs2.id);
-
-                // Debug information
-                msg.crownstones = crownstones;
-                msg.crownstones2 = crownstones2;
-
-                // No Crownstone with the specified name
-                if (crownstones2.length === 0) {
-                    node.warn("No Crownstone with the specified name");
-                    node.send(msg);
-                }
-
-                
-                /*// Switch the first Crownstone with the specified name
-                var crownstoneId = crownstones2[0];
                 let crownstone  = cloud.crownstone(crownstoneId);
                 if (crownstoneState){
                     await crownstone.turnOn();
                 }
                 else{
                     await crownstone.turnOff();
-                }*/
-
-                // Switch all Crownstones with the specified name
-                async function asyncSwitchCrownstones(crownstoneId) {
-                    let crownstone  = cloud.crownstone(crownstoneId);
-                    if (crownstoneState){
-                        await crownstone.turnOn();
-                    }
-                    else{
-                        await crownstone.turnOff();
-                    }
                 }
-                crownstones2.forEach(crownstoneId => {
-                    console.log(crownstoneId);
-                    asyncSwitchCrownstones(crownstoneId);
-                });
-                
+
                 node.send(msg);
             }
             asyncFunciton().catch((e) => {
@@ -79,11 +54,28 @@ module.exports = function(RED) {
                     node.error("Authorization Required");
                 }
                 else{
-                    console.log("There was a problem switching Crownstones:", e);
-                    node.warning("There was a problem switching crownstones");
+                    console.log("There was a problem switching Crownstone:", e);
+                    node.warning("There was a problem switching crownstone");
                 }
             });
         });
     }
-    RED.nodes.registerType("crownstone switch crownstone",CrownstoneSwitchCrownstone);
+    RED.nodes.registerType("crownstone switch crownstone", CrownstoneSwitchCrownstone);
+
+    RED.httpAdmin.get("/crownstones/:id", function(req,res) {
+        var node = RED.nodes.getNode(req.params.id); // This is a reference to the durrent deployed node in runtime. This does not work if the user just dragged the node on the workspace.
+        var globalContext = node.context().global;
+        var cloud = globalContext.get("crownstoneCloud"); // TODO: check if the global variable exists.
+
+
+        async function asyncFunciton() {
+            let crownstones = await cloud.crownstones();
+
+            // Lambda expression to create a list of crownstone names and ids
+            let crownstonesMapped = crownstones.map(cs => ({"name":cs.name, "id":cs.id, "dimming":cs.abilities.find(a => a.type === "dimming").enabled}));
+            console.log(crownstonesMapped); // Debug
+            res.json(crownstonesMapped);
+        }
+        asyncFunciton();
+    });
 }
