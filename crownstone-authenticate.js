@@ -13,10 +13,9 @@ module.exports = function(RED) {
         var password = this.credentials.password;
 
         // Login user
-        async function loginUser() {
+        (async() => {
             await cloud.loginHashed(email, CryptoJS.SHA1(password).toString());
-        }
-        loginUser().catch((e) => {
+        })().catch((e) => {
             console.log("There was a problem authenticating the user:", e);
             node.error("There was a problem authenticating the user");
         });

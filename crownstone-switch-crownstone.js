@@ -7,10 +7,10 @@ module.exports = function(RED) {
         const csLib = require("crownstone-cloud")
 
         // Input field values
-        var crownstoneId = config.crownstone;
+        var crownstoneId = config.crownstoneId||"";
         node.context().set("crownstoneId", crownstoneId);
-        var crownstoneState = config.state;
-        var crownstonePercentage = config.percentage;
+        var crownstoneOnOffToggle = config.onOffToggle;
+        var crownstoneDimPercentage = config.dimPercentage;
 
         // Retreive the cloud object from global context
         var globalContext = node.context().global;
@@ -31,7 +31,7 @@ module.exports = function(RED) {
         // Input event
         node.on('input', function(msg) {
 
-            async function asyncFunciton() {
+            (async() => {
                 let crownstone  = cloud.crownstone(crownstoneId);
 
                 // Is the Crownstone dimmable
@@ -40,12 +40,12 @@ module.exports = function(RED) {
 
                 // Switch the crownstone
                 if(dimmable){
-                    //console.log("Dimmable: " + crownstonePercentage); // Debug
-                    await crownstone.setSwitch(crownstonePercentage);
+                    //console.log("Dimmable: " + crownstoneDimPercentage); // Debug
+                    await crownstone.setSwitch(crownstoneDimPercentage);
                 }
                 else{
-                    //console.log("Not dimmable: " + crownstoneState); // Debug
-                    if (crownstoneState){
+                    //console.log("Not dimmable: " + crownstoneOnOffToggle); // Debug
+                    if (crownstoneOnOffToggle){
                         await crownstone.turnOn();
                     }
                     else{
@@ -54,8 +54,7 @@ module.exports = function(RED) {
                 }
 
                 node.send(msg);
-            }
-            asyncFunciton().catch((e) => {
+            })().catch((e) => {
                 if (e.statusCode === 401){
                     console.log("Authorization Required:", e);
                     node.error("Authorization Required");
@@ -78,7 +77,7 @@ module.exports = function(RED) {
         var selectedCrownstoneId = node.context().get("crownstoneId"); // Variables stored is context are not automaticaly updated like the other input values.
 
 
-        async function asyncFunciton() {
+       (async() => {
             let crownstones = await cloud.crownstones();
 
             // Lambda expression to create a list of crownstone names and ids
@@ -87,7 +86,6 @@ module.exports = function(RED) {
             
             //console.log(selectedCrownstoneId); // Debug
             res.json({"crownstones":crownstonesMapped,"selectedCrownstoneId":selectedCrownstoneId});
-        }
-        asyncFunciton();
+        })()
     });
 }
