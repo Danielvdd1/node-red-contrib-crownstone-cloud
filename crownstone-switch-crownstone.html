@@ -6,6 +6,7 @@
             name: {value:""},
             crownstone: {value:""},
             state: {value:false},
+            percentage: {value:0, validate:RED.validators.number()} // TODO: make a validator function for percentages
         },
         inputs:1,
         outputs:1,
@@ -15,12 +16,44 @@
         },
         oneditprepare: function() {
             var node = this;
+            var requestData;
+
+            function updateInputTypeDimming(dimming){
+                //console.log(dimming);
+                if(dimming){
+                    $("#input-state").hide();
+                    $("#input-percentage").show();
+                }
+                else{
+                    $("#input-state").show();
+                    $("#input-percentage").hide();
+                }
+            }
 
             $.getJSON('crownstones/' + node.id,function(data) {
                 console.log(data); // Debug
+                //console.log("Debug test: Start value of cronwstone" + $('#node-input-crownstone').val()); // The result is null because the list is empty.
 
-                data.forEach(crownstone => {
+                // Copy data for later use when the change event is activated.
+                //requestData = data;
+                requestData = $.extend(true, {}, data);
+
+
+                // Generate drop-down list
+                data.crownstones.forEach(crownstone => {
                     $('#node-input-crownstone').append(`<option value="${crownstone.id}">${crownstone.name}</option>`);
+                });
+                // Highlight selected item
+                $('#node-input-crownstone').val(requestData.selectedCrownstoneId);
+
+
+                // Show dimming or switching input field on start
+                var dimming = requestData.crownstones.find(a => a.id === requestData.selectedCrownstoneId).dimming;
+                updateInputTypeDimming(dimming);
+                // Show dimming or switching input field on change
+                $('#node-input-crownstone').on("change", function() {
+                    var dimming = requestData.crownstones.find(a => a.id === $(this).val()).dimming;
+                    updateInputTypeDimming(dimming);
                 });
             });
         }
@@ -45,10 +78,15 @@
         </select>
     </div>
 
-    <div class="form-row form-row-crownstone-state">
+    <div class="form-row form-row-crownstone-state" id="input-state">
         <label for="node-input-state"><i class="fa fa-tag"></i> switch state</label>
         <input type="checkbox" id="node-input-state" style="display: inline-block; width: auto; vertical-align: top;">
         <label for="node-input-state" style="width: 70%;">On/Off</label>
+    </div>
+
+    <div class="form-row form-row-crownstone-percentage" id="input-percentage">
+        <label for="node-input-percentage"><i class="fa fa-tag"></i> Percentage</label>
+        <input type="text" id="node-input-percentage" placeholder="%">
     </div>
 </script>
 
