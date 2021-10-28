@@ -4,7 +4,8 @@
         color: '#FFFFFF',
         defaults: {
             name: {value:""},
-            username: {value:""}
+            sphereId: {value:""},
+            userId: {value:""}
         },
         inputs:1,
         outputs:1,
@@ -22,8 +23,12 @@
     </div>
 
     <div class="form-row">
-        <label for="node-input-username"><i class="fa fa-user"></i> Username</label>
-        <input type="text" id="node-input-username" placeholder="Username">
+        <label for="node-input-userId"><i class="fa fa-tag"></i> User id</label>
+        <input type="text" id="node-input-userId" placeholder="Id">
+    </div>
+    <div class="form-row">
+        <label for="node-input-sphereId"><i class="fa fa-tag"></i> Sphere id</label>
+        <input type="text" id="node-input-sphereId" placeholder="Id">
     </div>
 </script>
 

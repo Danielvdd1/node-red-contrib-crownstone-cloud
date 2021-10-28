@@ -7,7 +7,8 @@ module.exports = function(RED) {
         const csLib = require("crownstone-cloud")
 
         // Input field values
-        var username = config.username;
+        var sphereId = config.sphereId;
+        var userId = config.userId;
 
         // Retreive the cloud object from global context
         var globalContext = node.context().global;
@@ -17,41 +18,36 @@ module.exports = function(RED) {
         // Input event
         node.on('input', function(msg) {
 
-            async function asyncFunciton() {
-                // Add localization code here.
+            (async() => {
+                // Get the sphere
+                //let sphereId = "612f454b79ce050004a044b3";
+                let sphere = cloud.sphere(sphereId); // TODO: Sphere selection
+
+                // Get userId
+                //let userId = "612f44c379ce050004a044a4"; // TODO: User selection
 
 
+                console.log("Users in sphere locations:");
+                let presentPeople = await sphere.presentPeople();
+                console.log(presentPeople);
+
+                /*
+                example data for present people:
+                [
+                    {
+                        userId: '612f44c379ce050004a044a4',
+                        locations: [ '6135bac760260600040a98cb' ]
+                    }
+                ]
+                */
 
 
-                // Get all users in a sphere
-                //let sphere = cloud.sphere("612f454b79ce050004a044b3");
-                //let users  = await sphere.users();
+                userLocation = presentPeople.find(person => person.userId === userId).locations[0];
 
-
-                let sphere = cloud.sphere("612f454b79ce050004a044b3");
-                let users  = await sphere.users();
-                console.log(users);
-                msg.payload = users;
-
-                let user = users.admins[0];
-
-                let location = await user.currentLocation();
-
-                console.log(location);
-
-
-                // Can I run currentLocation() on these users?
-
-
-
-                // Localize user
-                //let user = cloud.me();
-                //let userLocation = await user.currentLocation();
-
+                msg.userLocation = userLocation;
 
                 node.send(msg);
-            }
-            asyncFunciton().catch((e) => {
+            })().catch((e) => {
                 if (e.statusCode === 401){
                     console.log("Authorization Required:", e);
                     node.error("Authorization Required");
