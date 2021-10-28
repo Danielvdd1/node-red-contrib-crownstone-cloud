@@ -23,9 +23,7 @@ module.exports = function(RED) {
 
         // Store the cloud object in global context
         var globalContext = this.context().global;
-        if (globalContext.get("crownstoneCloud") === undefined) {
             globalContext.set("crownstoneCloud", cloud)
-        }
 
         // Input event
         node.on('input', function(msg) {
