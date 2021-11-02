@@ -3,9 +3,6 @@ module.exports = function(RED) {
         RED.nodes.createNode(this,config);
         var node = this;
 
-        // Libraries
-        const csLib = require("crownstone-cloud")
-
         // Input field values
         var crownstoneId = config.crownstoneId||"";
         var crownstoneOnOffToggle = config.onOffToggle;
@@ -37,13 +34,11 @@ module.exports = function(RED) {
                 let crownstoneData = await crownstone.data();
                 let dimmable = crownstoneData.abilities.find(a => a.type === "dimming").enabled;
 
-                // Switch the crownstone
+                // Switch the Crownstone
                 if(dimmable){
-                    //console.log("Dimmable: " + crownstoneDimPercentage); // Debug
                     await crownstone.setSwitch(crownstoneDimPercentage);
                 }
                 else{
-                    //console.log("Not dimmable: " + crownstoneOnOffToggle); // Debug
                     if (crownstoneOnOffToggle){
                         await crownstone.turnOn();
                     }
