@@ -25,10 +25,14 @@ module.exports = function(RED) {
 
         
         // Input event
-        node.on('input', function(msg) {
+        node.on('input', function(msg, send, done) {
 
             (async() => {
-                let crownstone  = cloud.crownstone(crownstoneId);
+                if (msg.crownstoneId !== undefined){
+                    crownstoneId = msg.crownstoneId;
+                }
+
+                let crownstone = cloud.crownstone(crownstoneId);
 
                 // Is the Crownstone dimmable
                 let crownstoneData = await crownstone.data();
@@ -36,18 +40,25 @@ module.exports = function(RED) {
 
                 // Switch the Crownstone
                 if(dimmable){
+                    if (msg.dimPercentage !== undefined) {
+                        crownstoneDimPercentage = msg.dimPercentage;
+                    }
                     await crownstone.setSwitch(crownstoneDimPercentage);
+                    done();
                 }
                 else{
+                    if (msg.onOffToggle !== undefined) {
+                        crownstoneOnOffToggle = msg.onOffToggle;
+                    }
                     if (crownstoneOnOffToggle){
                         await crownstone.turnOn();
+                        done();
                     }
                     else{
                         await crownstone.turnOff();
+                        done();
                     }
                 }
-
-                node.send(msg);
             })().catch((e) => {
                 if (e.statusCode === 401){
                     console.log("Authorization Required:", e);

@@ -9,7 +9,8 @@
             dimPercentage: {value:0, validate:function(v) {return v !== "" && !isNaN(v) && (v >= 0 && v <= 100);}} // Validation function for percentages
         },
         inputs:1,
-        outputs:1,
+        outputs:0,
+        align: 'left',
         icon: "icons/crownstone_logo_black.svg",
         label: function() {
             return this.name||"Crownstone switch Crownstone";
@@ -77,13 +78,12 @@
         </select>
     </div>
 
-    <div class="form-row form-row-onOffToggle" id="input-onOffToggle">
+    <div class="form-row form-row-onOffToggle" id="input-onOffToggle" hidden>
         <label for="node-input-onOffToggle"><i class="fa fa-sliders"></i> New State</label>
         <input type="checkbox" id="node-input-onOffToggle" style="display: inline-block; width: auto; vertical-align: top;">
         <label for="node-input-onOffToggle" style="width: 70%;">On/Off</label>
     </div>
-
-    <div class="form-row form-row-dimPercentage" id="input-dimPercentage">
+    <div class="form-row form-row-dimPercentage" id="input-dimPercentage" hidden>
         <label for="node-input-dimPercentage"><i class="fa fa-percent"></i> Dim percentage</label>
         <input type="text" id="node-input-dimPercentage" placeholder="%">
     </div>
