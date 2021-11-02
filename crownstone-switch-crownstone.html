@@ -6,7 +6,7 @@
             name: {value:""},
             crownstoneId: {value:""},
             onOffToggle: {value:false},
-            dimPercentage: {value:0, validate:RED.validators.number()} // TODO: make a validator function for percentages
+            dimPercentage: {value:0, validate:function(v) {return v !== "" && !isNaN(v) && (v >= 0 && v <= 100);}} // Validation function for percentages
         },
         inputs:1,
         outputs:1,
