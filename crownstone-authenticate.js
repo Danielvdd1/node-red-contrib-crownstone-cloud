@@ -6,7 +6,6 @@ module.exports = function(RED) {
         // Libraries
         const csLib = require("crownstone-cloud")
         const cloud = new csLib.CrownstoneCloud();
-        var CryptoJS = require("crypto-js");
 
         // Input field values
         var email = this.credentials.email;
@@ -14,7 +13,7 @@ module.exports = function(RED) {
 
         // Login user
         async function loginUser() {
-            await cloud.loginHashed(email, CryptoJS.SHA1(password).toString());
+            await cloud.loginHashed(email, cloud.hashPassword(password));
         }
         loginUser().catch((e) => {
             console.log("There was a problem authenticating the user:", e);
