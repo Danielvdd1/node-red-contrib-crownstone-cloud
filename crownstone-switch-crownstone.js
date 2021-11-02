@@ -8,7 +8,6 @@ module.exports = function(RED) {
 
         // Input field values
         var crownstoneId = config.crownstoneId||"";
-        node.context().set("crownstoneId", crownstoneId);
         var crownstoneOnOffToggle = config.onOffToggle;
         var crownstoneDimPercentage = config.dimPercentage;
 
@@ -74,18 +73,14 @@ module.exports = function(RED) {
         var globalContext = node.context().global;
         var cloud = globalContext.get("crownstoneCloud"); // TODO: check if the global variable exists.
 
-        var selectedCrownstoneId = node.context().get("crownstoneId"); // Variables stored is context are not automaticaly updated like the other input values.
-
-
-       (async() => {
+        (async() => {
+            // Request data of all Crownstones
             let crownstones = await cloud.crownstones();
 
             // Lambda expression to create a list of crownstone names and ids
             let crownstonesMapped = crownstones.map(cs => ({"name":cs.name, "id":cs.id, "dimming":cs.abilities.find(a => a.type === "dimming").enabled}));
             
-            
-            //console.log(selectedCrownstoneId); // Debug
-            res.json({"crownstones":crownstonesMapped,"selectedCrownstoneId":selectedCrownstoneId});
+            res.json({"crownstones":crownstonesMapped});
         })()
     });
 }

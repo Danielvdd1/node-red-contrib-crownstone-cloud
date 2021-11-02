@@ -18,8 +18,8 @@
             var node = this;
             var requestData;
 
+            // Function to show or hide the corresponding input fields
             function updateInputTypeDimming(dimming){
-                //console.log(dimming);
                 if(dimming){
                     $("#input-onOffToggle").hide();
                     $("#input-dimPercentage").show();
@@ -31,32 +31,32 @@
             }
 
             $.getJSON('crownstones/' + node.id,function(data) {
-                console.log(data); // Debug
-                //console.log("Debug test: Start value of cronwstone" + $('#node-input-crownstone').val()); // The result is null because the list is empty.
-
                 // Copy data for later use when the change event is activated.
-                //requestData = data;
                 requestData = $.extend(true, {}, data);
 
 
                 // Generate drop-down list
                 for (let i = 0; i < data.crownstones.length; i++) {
                     const crownstone = data.crownstones[i];
-                    $('#node-input-crownstoneId').append(`<option value="${crownstone.id}">${crownstone.name}</option>`);
+                    $('#node-input-crownstoneName').append(`<option value="${crownstone.id}">${crownstone.name}</option>`);
                 }
                 // Highlight selected item
-                $('#node-input-crownstoneId').val(requestData.selectedCrownstoneId);
+                $('#node-input-crownstoneName').val($('#node-input-crownstoneId').val());
 
                 
                 // Show dimming or switching input field on start
-                var dimming = requestData.crownstones.find(a => a.id === requestData.selectedCrownstoneId).dimming;
+                var dimming = requestData.crownstones.find(a => a.id === $('#node-input-crownstoneId').val()).dimming;
                 updateInputTypeDimming(dimming);
                 // Show dimming or switching input field on change
-                $('#node-input-crownstoneId').on("change", function() {
+                $('#node-input-crownstoneName').on("change", function() {
                     var dimming = requestData.crownstones.find(a => a.id === $(this).val()).dimming;
                     updateInputTypeDimming(dimming);
                 });
             });
+        },
+        oneditsave: function() {
+            // Put the chosen Crownstone in the hidden field
+            $('#node-input-crownstoneId').val($('#node-input-crownstoneName').val());
         }
     });
 </script>
@@ -67,15 +67,13 @@
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
 
-    <!--
-    <div class="form-row">
-        <label for="node-input-crownstone"><i class="fa fa-tag"></i> Crownstone name</label>
-        <input type="text" id="node-input-crownstone" placeholder="Crownstone name">
+    <div class="form-row form-row-crownstoneId" id="input-crownstoneId" hidden>
+        <label for="node-input-crownstoneId"> Crownstone id</label>
+        <input type="text" id="node-input-crownstoneId">
     </div>
-    -->
-    <div class="form-row form-row-crownstoneId">
-        <label for="node-input-crownstoneId"><i class="fa fa-tag"></i> Crownstone name</span></label>
-        <select type="text" id="node-input-crownstoneId" style="width: 250px;">
+    <div class="form-row form-row-crownstoneName">
+        <label for="node-input-crownstoneName"><i class="fa fa-tag"></i> Crownstone name</span></label>
+        <select type="text" id="node-input-crownstoneName" style="width: 250px;">
         </select>
     </div>
 
@@ -86,7 +84,7 @@
     </div>
 
     <div class="form-row form-row-dimPercentage" id="input-dimPercentage">
-        <label for="node-input-dimPercentage"><i class="fa fa-percent"></i> Percentage</label>
+        <label for="node-input-dimPercentage"><i class="fa fa-percent"></i> Dim percentage</label>
         <input type="text" id="node-input-dimPercentage" placeholder="%">
     </div>
 </script>
