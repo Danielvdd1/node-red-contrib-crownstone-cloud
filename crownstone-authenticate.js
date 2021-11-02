@@ -13,9 +13,10 @@ module.exports = function(RED) {
         var password = this.credentials.password;
 
         // Login user
-        (async() => {
+        async function loginUser() {
             await cloud.loginHashed(email, CryptoJS.SHA1(password).toString());
-        })().catch((e) => {
+        }
+        loginUser().catch((e) => {
             console.log("There was a problem authenticating the user:", e);
             node.error("There was a problem authenticating the user");
         });
@@ -23,13 +24,13 @@ module.exports = function(RED) {
 
         // Store the cloud object in global context
         var globalContext = this.context().global;
-            globalContext.set("crownstoneCloud", cloud)
+        globalContext.set("crownstoneCloud", cloud);
 
         // Input event
-        node.on('input', function(msg) {
+        node.on('input', function(msg, send, done) {
             loginUser();
             
-            node.send(msg);
+            done(); // No output
         });
     }
     RED.nodes.registerType("crownstone authenticate",CrownstoneAuthenticatetNode,{
