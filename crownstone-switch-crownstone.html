@@ -38,7 +38,7 @@
 
                 // Generate drop-down list
                 for (let crownstone of data.crownstones) {
-                    $('#node-input-crownstoneName').append(`<option value="${crownstone.id}">${crownstone.name}</option>`);
+                    $('#node-input-crownstoneName').append(`<option value="${crownstone.id}" title="${crownstone.location}">${crownstone.name}</option>`);
                 }
                 // Highlight selected item
                 $('#node-input-crownstoneName').val($('#node-input-crownstoneId').val());

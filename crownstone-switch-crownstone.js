@@ -90,7 +90,7 @@ module.exports = function(RED) {
             let crownstones = await cloud.crownstones();
 
             // Lambda expression to create a list of crownstone names and ids
-            let crownstonesMapped = crownstones.map(cs => ({"name":cs.name, "id":cs.id, "dimming":cs.abilities.find(a => a.type === "dimming").enabled}));
+            let crownstonesMapped = crownstones.map(cs => ({"id":cs.id, "name":cs.name, "location":cs.location.name, "dimming":cs.abilities.find(a => a.type === "dimming").enabled}));
             
             res.json({"crownstones":crownstonesMapped});
         })()
