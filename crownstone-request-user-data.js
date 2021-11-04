@@ -8,11 +8,11 @@ module.exports = function(RED) {
         var cloud = globalContext.get("crownstoneCloud");
 
         // Input event
-        node.on('input', function(msg) {
+        node.on('input', function(msg, send, done) {
             let myUser = cloud.me();
             msg.payload = myUser;
 
-            node.send(msg);
+            send(msg);
         });
     }
     RED.nodes.registerType("crownstone request user data",CrownstoneRequestUserData);

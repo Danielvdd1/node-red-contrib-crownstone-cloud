@@ -45,6 +45,7 @@ module.exports = function(RED) {
                     }
                     await crownstone.setSwitch(crownstoneDimPercentage);
                     done();
+                    return;
                 }
                 else{
                     if (msg.onOffToggle !== undefined) {
@@ -53,10 +54,12 @@ module.exports = function(RED) {
                     if (crownstoneOnOffToggle){
                         await crownstone.turnOn();
                         done();
+                        return;
                     }
                     else{
                         await crownstone.turnOff();
                         done();
+                        return;
                     }
                 }
             })().catch((e) => {
@@ -66,7 +69,7 @@ module.exports = function(RED) {
                 }
                 else{
                     console.log("There was a problem switching Crownstone:", e);
-                    node.warning("There was a problem switching crownstone");
+                    node.error("There was a problem switching crownstone");
                 }
             });
         });

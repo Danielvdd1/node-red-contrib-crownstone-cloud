@@ -29,7 +29,7 @@ module.exports = function(RED) {
         node.on('input', function(msg, send, done) {
             loginUser();
             
-            done(); // No output
+            done();
         });
     }
     RED.nodes.registerType("crownstone authenticate",CrownstoneAuthenticatetNode,{

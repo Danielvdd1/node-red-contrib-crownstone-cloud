@@ -62,7 +62,7 @@ module.exports = function(RED) {
     }
     RED.nodes.registerType("crownstone localize user", CrownstoneLocalizeUser);
 
-    // This section is for the oneditprepare event in the browser to get a list of Crownstones.
+    // This section is for the oneditprepare event in the browser to get a list of users.
     RED.httpAdmin.get("/users/:id/:sphereId", function(req,res) {
         var node = RED.nodes.getNode(req.params.id); // This is a reference to the durrent deployed node in runtime. This does not work if the user just dragged the node on the workspace.
         var globalContext = node.context().global;

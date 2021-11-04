@@ -37,8 +37,7 @@
 
 
                 // Generate drop-down list
-                for (let i = 0; i < data.crownstones.length; i++) {
-                    const crownstone = data.crownstones[i];
+                for (let crownstone of data.crownstones) {
                     $('#node-input-crownstoneName').append(`<option value="${crownstone.id}">${crownstone.name}</option>`);
                 }
                 // Highlight selected item
@@ -69,17 +68,16 @@
     </div>
 
     <div class="form-row form-row-crownstoneId" id="input-crownstoneId" hidden>
-        <label for="node-input-crownstoneId"> Crownstone id</label>
         <input type="text" id="node-input-crownstoneId">
     </div>
     <div class="form-row form-row-crownstoneName">
-        <label for="node-input-crownstoneName"><i class="fa fa-tag"></i> Crownstone name</span></label>
+        <label for="node-input-crownstoneName"><i class="fa fa-plug"></i> Crownstone name</span></label>
         <select type="text" id="node-input-crownstoneName" style="width: 250px;">
         </select>
     </div>
 
     <div class="form-row form-row-onOffToggle" id="input-onOffToggle" hidden>
-        <label for="node-input-onOffToggle"><i class="fa fa-sliders"></i> New State</label>
+        <label for="node-input-onOffToggle"><i class="fa fa-toggle-on"></i> New State</label>
         <input type="checkbox" id="node-input-onOffToggle" style="display: inline-block; width: auto; vertical-align: top;">
         <label for="node-input-onOffToggle" style="width: 70%;">On/Off</label>
     </div>
