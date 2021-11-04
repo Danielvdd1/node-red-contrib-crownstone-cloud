@@ -16,37 +16,41 @@ module.exports = function(RED) {
 
         
         // Input event
-        node.on('input', function(msg) {
+        node.on('input', function(msg, send, done) {
 
             (async() => {
                 // Get the sphere
-                //let sphereId = "612f454b79ce050004a044b3";
-                let sphere = cloud.sphere(sphereId); // TODO: Sphere selection
+                let sphere = cloud.sphere(sphereId);
 
-                // Get userId
-                //let userId = "612f44c379ce050004a044a4"; // TODO: User selection
-
-
-                console.log("Users in sphere locations:");
+                // Request present people in the sphere
                 let presentPeople = await sphere.presentPeople();
-                console.log(presentPeople);
+                if (presentPeople.length === 0) { // No present people
+                    send(msg);
+                    return;
+                }
 
-                /*
-                example data for present people:
-                [
-                    {
-                        userId: '612f44c379ce050004a044a4',
-                        locations: [ '6135bac760260600040a98cb' ]
-                    }
-                ]
-                */
+                // Get location of selected user.
+                let user = presentPeople.find(person => person.userId === userId);
+                if (user === undefined) { // Choosen user not present
+                    send(msg);
+                    return;
+                }
+                
+                if (user.locations.length === 0) { // User not in a location
+                    send(msg);
+                    return;
+                }
 
+                // Get location id
+                let userLocationId = user.locations[0];
+                msg.locationId = userLocationId;
 
-                userLocation = presentPeople.find(person => person.userId === userId).locations[0];
+                // Get location name
+                let locations = await cloud.locations();
+                let userLocationName = locations.find(location => location.id === userLocationId).name;
+                msg.locationName = userLocationName;
 
-                msg.userLocation = userLocation;
-
-                node.send(msg);
+                send(msg);
             })().catch((e) => {
                 if (e.statusCode === 401){
                     console.log("Authorization Required:", e);
@@ -54,7 +58,7 @@ module.exports = function(RED) {
                 }
                 else{
                     console.log("There was a problem localizing the user:", e);
-                    node.warning("There was a problem localizing the user");
+                    node.error("There was a problem localizing the user");
                 }
             });
         });
