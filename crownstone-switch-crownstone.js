@@ -10,7 +10,10 @@ module.exports = function(RED) {
 
         // Retreive the cloud object from global context
         var globalContext = node.context().global;
-        var cloud = globalContext.get("crownstoneCloud");
+        var cloud;
+
+        // Wait one tick of the event loop in case the authenticate node runs later and did not yet store the cloud in global context
+        setImmediate(() => {cloud = globalContext.get("crownstoneCloud");});
 
         /*
         async function requestCrownstones() {
