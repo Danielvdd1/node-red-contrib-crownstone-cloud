@@ -21,7 +21,8 @@
     "nodes": {
       "crownstone-authenticate": "crownstone-authenticate.js",
       "crownstone-request-user-data": "crownstone-request-user-data.js",
-      "crownstone-switch-crownstone": "crownstone-switch-crownstone.js"
+      "crownstone-switch-crownstone": "crownstone-switch-crownstone.js",
+      "crownstone-localize-user": "crownstone-localize-user.js"
     }
   }
 }

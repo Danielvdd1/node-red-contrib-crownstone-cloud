@@ -1,0 +1,37 @@
+<script type="text/javascript">
+    RED.nodes.registerType('crownstone localize user',{
+        category: 'experimental',
+        color: '#FFFFFF',
+        defaults: {
+            name: {value:""},
+            sphereId: {value:""},
+            userId: {value:""}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "icons/crownstone_logo_black.svg",
+        label: function() {
+            return this.name||"Crownstone localize user";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="crownstone localize user">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-userId"><i class="fa fa-tag"></i> User id</label>
+        <input type="text" id="node-input-userId" placeholder="Id">
+    </div>
+    <div class="form-row">
+        <label for="node-input-sphereId"><i class="fa fa-tag"></i> Sphere id</label>
+        <input type="text" id="node-input-sphereId" placeholder="Id">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="crownstone localize user">
+    <p>Get the location of a user with the REST API.</p>
+</script>
