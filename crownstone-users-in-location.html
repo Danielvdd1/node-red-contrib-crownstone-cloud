@@ -1,0 +1,52 @@
+<script type="text/javascript">
+    RED.nodes.registerType('crownstone users in location',{
+        category: 'Crownstone',
+        color: '#FFFFFF',
+        defaults: {
+            name: {value:""},
+            locationId: {value:""}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "icons/crownstone_logo_black.svg",
+        label: function() {
+            return this.name||"Crownstone users in location";
+        },
+        oneditprepare: function() {
+            var node = this;
+
+            $.getJSON('locations/' + node.id,function(data) {
+                // Generate drop-down list
+                for (let location of data.locations) {
+                    $('#node-input-locationName').append(`<option value="${location.id}">${location.name}</option>`);
+                }
+                // Highlight selected item
+                $('#node-input-locationName').val($('#node-input-locationId').val());
+            });
+        },
+        oneditsave: function() {
+            // Put the chosen location in the hidden field
+            $('#node-input-locationId').val($('#node-input-locationName').val());
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="crownstone users in location">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+
+    <div class="form-row form-row-locationId" id="input-locationId" hidden>
+        <input type="text" id="node-input-locationId">
+    </div>
+    <div class="form-row form-row-locationName">
+        <label for="node-input-locationName"><i class="fa fa-map-marker"></i> Location</span></label>
+        <select type="text" id="node-input-locationName" style="width: 250px;">
+        </select>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="crownstone users in location">
+    <p>Get a list of users in a location with the REST API.</p>
+</script>
