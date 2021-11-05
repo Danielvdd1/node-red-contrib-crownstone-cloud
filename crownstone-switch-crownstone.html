@@ -33,7 +33,8 @@
 
             $.getJSON('crownstones/' + node.id,function(data) {
                 // Copy data for later use when the change event is activated.
-                requestData = $.extend(true, {}, data);
+                //requestData = $.extend(true, {}, data);
+                requestData = data;
 
 
                 // Generate drop-down list
