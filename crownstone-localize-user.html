@@ -17,17 +17,45 @@
             var node = this;
             var sphereId = $('#node-input-sphereId').val();
 
-            $.getJSON('users/' + node.id + '/' + sphereId,function(data) {
+            // Function to uptate the user list depenting on the selected sphere
+            function updateUserList(sphereId) {
+                $('#input-userName').show();
+                $.getJSON('users/' + node.id + '/' + sphereId,function(data) {
+                    // Generate drop-down list
+                    for (let user of data.users) {
+                        $('#node-input-userName').empty();
+                        $('#node-input-userName').append(`<option value="${user.id}" title="${user.firstName} ${user.lastName}">${user.firstName}</option>`);
+                    }
+                    // Highlight selected item
+                    $('#node-input-userName').val($('#node-input-userId').val());
+                });
+            }
+
+            $.getJSON('spheres/' + node.id,function(data) {
                 // Generate drop-down list
-                for (let user of data.users) {
-                    $('#node-input-userName').append(`<option value="${user.id}" title="${user.firstName} ${user.lastName}">${user.firstName}</option>`);
+                for (let sphere of data.spheres) {
+                    $('#node-input-sphereName').append(`<option value="${sphere.id}">${sphere.name}</option>`);
                 }
                 // Highlight selected item
-                $('#node-input-userName').val($('#node-input-userId').val());
+                $('#node-input-sphereName').val($('#node-input-sphereId').val());
+            });
+
+            // Generate user list at start when a shpere is selected
+            if ($('#node-input-sphereId').val()){
+                let sphereId = $('#node-input-sphereId').val();
+                updateUserList(sphereId);
+            }
+
+            // Generate user list when a sphere is selected
+            $('#node-input-sphereName').on("change", function() {
+                let sphereId = $('#node-input-sphereName').val();
+                updateUserList(sphereId);
             });
         },
         oneditsave: function() {
-            // Put the chosen Crownstone in the hidden field
+            // Put the chosen sphere in the hidden field
+            $('#node-input-sphereId').val($('#node-input-sphereName').val());
+            // Put the chosen user in the hidden field
             $('#node-input-userId').val($('#node-input-userName').val());
         }
     });
@@ -39,15 +67,19 @@
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
 
-    <div class="form-row">
-        <label for="node-input-sphereId"><i class="fa fa-globe"></i> Sphere id</label>
-        <input type="text" id="node-input-sphereId" placeholder="Id">
+    <div class="form-row form-row-sphereId" id="input-sphereId" hidden>
+        <input type="text" id="node-input-sphereId">
+    </div>
+    <div class="form-row form-row-sphereName">
+        <label for="node-input-sphereName"><i class="fa fa-user"></i> Sphere</span></label>
+        <select type="text" id="node-input-sphereName" style="width: 250px;">
+        </select>
     </div>
 
     <div class="form-row form-row-userId" id="input-userId" hidden>
         <input type="text" id="node-input-userId">
     </div>
-    <div class="form-row form-row-userName">
+    <div class="form-row form-row-userName" id="input-userName" hidden>
         <label for="node-input-userName"><i class="fa fa-user"></i> Username</span></label>
         <select type="text" id="node-input-userName" style="width: 250px;">
         </select>

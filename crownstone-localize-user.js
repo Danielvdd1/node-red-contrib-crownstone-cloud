@@ -65,6 +65,22 @@ module.exports = function(RED) {
     }
     RED.nodes.registerType("crownstone localize user", CrownstoneLocalizeUser);
 
+    // This section is for the oneditprepare event in the browser to get a list of spheres.
+    RED.httpAdmin.get("/spheres/:id", function(req,res) {
+        var node = RED.nodes.getNode(req.params.id); // This is a reference to the durrent deployed node in runtime. This does not work if the user just dragged the node on the workspace.
+        var globalContext = node.context().global;
+        var cloud = globalContext.get("crownstoneCloud"); // TODO: check if the global variable exists.
+
+        (async() => {
+            // Request users from the sphere
+            let spheres = await cloud.spheres();
+
+            let spheresMapped = spheres.map(sphere => ({"id":sphere.id, "name":sphere.name}));
+
+            res.json({"spheres":spheresMapped});
+        })();
+    });
+
     // This section is for the oneditprepare event in the browser to get a list of users.
     RED.httpAdmin.get("/users/:id/:sphereId", function(req,res) {
         var node = RED.nodes.getNode(req.params.id); // This is a reference to the durrent deployed node in runtime. This does not work if the user just dragged the node on the workspace.
@@ -72,6 +88,10 @@ module.exports = function(RED) {
         var cloud = globalContext.get("crownstoneCloud"); // TODO: check if the global variable exists.
 
         let sphere = cloud.sphere(req.params.sphereId);
+        if (sphere === undefined) { // Choosen user not present
+            res.json({"users":[]});
+            return;
+        }
 
         (async() => {
             // Request users from the sphere
