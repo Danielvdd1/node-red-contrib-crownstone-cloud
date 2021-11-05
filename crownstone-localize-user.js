@@ -19,6 +19,13 @@ module.exports = function(RED) {
         node.on('input', function(msg, send, done) {
 
             (async() => {
+                if (msg.userId !== undefined){
+                    userId = msg.userId;
+                    if (msg.sphereId !== undefined){
+                        sphereId = msg.sphereId;
+                    }
+                }
+
                 // Get the sphere
                 let sphere = cloud.sphere(sphereId);
 
