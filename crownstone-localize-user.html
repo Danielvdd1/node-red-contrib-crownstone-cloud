@@ -22,7 +22,7 @@
                 $('#input-userName').show();
                 $.getJSON('users/' + node.id + '/' + sphereId,function(data) {
                     // Generate drop-down list
-                    for (let user of data.users) {
+                    for (let user of data) {
                         $('#node-input-userName').empty();
                         $('#node-input-userName').append(`<option value="${user.id}" title="${user.firstName} ${user.lastName}">${user.firstName}</option>`);
                     }
@@ -33,7 +33,7 @@
 
             $.getJSON('spheres/' + node.id,function(data) {
                 // Generate drop-down list
-                for (let sphere of data.spheres) {
+                for (let sphere of data) {
                     $('#node-input-sphereName').append(`<option value="${sphere.id}">${sphere.name}</option>`);
                 }
                 // Highlight selected item

@@ -65,17 +65,29 @@ module.exports = function(RED) {
 
     // This section is for the oneditprepare event in the browser to get a list of spheres.
     RED.httpAdmin.get("/locations/:id", function(req,res) {
-        var node = RED.nodes.getNode(req.params.id); // This is a reference to the durrent deployed node in runtime. This does not work if the user just dragged the node on the workspace.
+        var node = RED.nodes.getNode(req.params.id); // This is a reference to the currently deployed node in runtime. This does not work if the user just dragged the node on the workspace.
+        if (node === null) { // Node with the given id does not exist
+            res.statusCode = 400;
+            res.json([]);
+            return;
+        }
         var globalContext = node.context().global;
-        var cloud = globalContext.get("crownstoneCloud"); // TODO: check if the global variable exists.
+        var cloud = globalContext.get("crownstoneCloud");
+        if (cloud === undefined) { // Cloud object is not stored in global context
+            res.statusCode = 400;
+            res.json([]);
+            return;
+        }
 
         (async() => {
             // Request locations
             let locations = await cloud.locations();
 
+            // Map the list of locations to a more compact format
             let locationsMapped = locations.map(location => ({"id":location.id, "name":location.name}));
 
-            res.json({"locations":locationsMapped});
+            // res.setHeader('Cache-Control', 'max-age=120, public');
+            res.json(locationsMapped);
         })();
     });
 }

@@ -17,7 +17,7 @@
 
             $.getJSON('locations/' + node.id,function(data) {
                 // Generate drop-down list
-                for (let location of data.locations) {
+                for (let location of data) {
                     $('#node-input-locationName').append(`<option value="${location.id}">${location.name}</option>`);
                 }
                 // Highlight selected item

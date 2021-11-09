@@ -74,29 +74,52 @@ module.exports = function(RED) {
 
     // This section is for the oneditprepare event in the browser to get a list of spheres.
     RED.httpAdmin.get("/spheres/:id", function(req,res) {
-        var node = RED.nodes.getNode(req.params.id); // This is a reference to the durrent deployed node in runtime. This does not work if the user just dragged the node on the workspace.
+        var node = RED.nodes.getNode(req.params.id); // This is a reference to the currently deployed node in runtime. This does not work if the user just dragged the node on the workspace.
+        if (node === null) { // Node with the given id does not exist
+            res.statusCode = 400;
+            res.json([]);
+            return;
+        }
         var globalContext = node.context().global;
-        var cloud = globalContext.get("crownstoneCloud"); // TODO: check if the global variable exists.
+        var cloud = globalContext.get("crownstoneCloud");
+        if (cloud === undefined) { // Cloud object is not stored in global context
+            res.statusCode = 400;
+            res.json([]);
+            return;
+        }
 
         (async() => {
             // Request users from the sphere
             let spheres = await cloud.spheres();
 
+            // Map the list of spheres to a more compact format
             let spheresMapped = spheres.map(sphere => ({"id":sphere.id, "name":sphere.name}));
 
-            res.json({"spheres":spheresMapped});
+            // res.setHeader('Cache-Control', 'max-age=120, public');
+            res.json(spheresMapped);
         })();
     });
 
     // This section is for the oneditprepare event in the browser to get a list of users.
     RED.httpAdmin.get("/users/:id/:sphereId", function(req,res) {
-        var node = RED.nodes.getNode(req.params.id); // This is a reference to the durrent deployed node in runtime. This does not work if the user just dragged the node on the workspace.
+        var node = RED.nodes.getNode(req.params.id); // This is a reference to the currently deployed node in runtime. This does not work if the user just dragged the node on the workspace.
+        if (node === null) { // Node with the given id does not exist
+            res.statusCode = 400;
+            res.json([]);
+            return;
+        }
         var globalContext = node.context().global;
-        var cloud = globalContext.get("crownstoneCloud"); // TODO: check if the global variable exists.
+        var cloud = globalContext.get("crownstoneCloud");
+        if (cloud === undefined) { // Cloud object is not stored in global context
+            res.statusCode = 400;
+            res.json([]);
+            return;
+        }
 
         let sphere = cloud.sphere(req.params.sphereId);
-        if (sphere === undefined) { // Choosen user not present
-            res.json({"users":[]});
+        if (sphere === undefined) { // Choosen sphere not present
+            res.statusCode = 400;
+            res.json([]);
             return;
         }
 
@@ -112,7 +135,8 @@ module.exports = function(RED) {
                 }
             }
 
-            res.json({"users":usersMapped});
+            // res.setHeader('Cache-Control', 'max-age=120, public');
+            res.json(usersMapped);
         })();
     });
 }

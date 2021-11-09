@@ -38,7 +38,7 @@
 
 
                 // Generate drop-down list
-                for (let crownstone of data.crownstones) {
+                for (let crownstone of data) {
                     $('#node-input-crownstoneName').append(`<option value="${crownstone.id}" title="${crownstone.location}">${crownstone.name}</option>`);
                 }
                 // Highlight selected item
@@ -46,11 +46,11 @@
 
                 
                 // Show dimming or switching input field on start
-                var dimming = requestData.crownstones.find(a => a.id === $('#node-input-crownstoneId').val()).dimming;
+                var dimming = requestData.find(a => a.id === $('#node-input-crownstoneId').val()).dimming;
                 updateInputTypeDimming(dimming);
                 // Show dimming or switching input field on change
                 $('#node-input-crownstoneName').on("change", function() {
-                    var dimming = requestData.crownstones.find(a => a.id === $(this).val()).dimming;
+                    var dimming = requestData.find(a => a.id === $(this).val()).dimming;
                     updateInputTypeDimming(dimming);
                 });
             });
