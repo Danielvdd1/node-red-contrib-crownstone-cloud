@@ -22,8 +22,8 @@
                 $('#input-userName').show();
                 $.getJSON('users/' + node.id + '/' + sphereId,function(data) {
                     // Generate drop-down list
+                    $('#node-input-userName').empty();
                     for (let user of data) {
-                        $('#node-input-userName').empty();
                         $('#node-input-userName').append(`<option value="${user.id}" title="${user.firstName} ${user.lastName}">${user.firstName}</option>`);
                     }
                     // Highlight selected item
