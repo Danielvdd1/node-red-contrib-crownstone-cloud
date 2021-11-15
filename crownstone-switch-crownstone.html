@@ -5,7 +5,7 @@
         defaults: {
             name: {value:""},
             crownstoneId: {value:""},
-            onOffToggle: {value:false},
+            onOff: {value:false},
             dimPercentage: {value:0, validate:function(v) {return v !== "" && !isNaN(v) && (v >= 0 && v <= 100);}} // Validation function for percentages
         },
         inputs:1,
@@ -22,11 +22,11 @@
             // Function to show or hide the corresponding input fields
             function updateInputTypeDimming(dimming){
                 if(dimming){
-                    $("#input-onOffToggle").hide();
+                    $("#input-onOff").hide();
                     $("#input-dimPercentage").show();
                 }
                 else{
-                    $("#input-onOffToggle").show();
+                    $("#input-onOff").show();
                     $("#input-dimPercentage").hide();
                 }
             }
@@ -77,10 +77,10 @@
         </select>
     </div>
 
-    <div class="form-row form-row-onOffToggle" id="input-onOffToggle" hidden>
-        <label for="node-input-onOffToggle"><i class="fa fa-toggle-on"></i> New State</label>
-        <input type="checkbox" id="node-input-onOffToggle" style="display: inline-block; width: auto; vertical-align: top;">
-        <label for="node-input-onOffToggle" style="width: 70%;">On/Off</label>
+    <div class="form-row form-row-onOff" id="input-onOff" hidden>
+        <label for="node-input-onOff"><i class="fa fa-toggle-on"></i> New State</label>
+        <input type="checkbox" id="node-input-onOff" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-onOff" style="width: 70%;">On/Off</label>
     </div>
     <div class="form-row form-row-dimPercentage" id="input-dimPercentage" hidden>
         <label for="node-input-dimPercentage"><i class="fa fa-percent"></i> Dim percentage</label>

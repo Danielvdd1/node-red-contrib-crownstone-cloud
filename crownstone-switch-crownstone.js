@@ -5,7 +5,7 @@ module.exports = function(RED) {
 
         // Input field values
         var crownstoneId = config.crownstoneId||"";
-        var crownstoneOnOffToggle = config.onOffToggle;
+        var crownstoneOnOff = config.onOff;
         var crownstoneDimPercentage = config.dimPercentage;
 
         // Retreive the cloud object from global context
@@ -51,10 +51,10 @@ module.exports = function(RED) {
                     return;
                 }
                 else{
-                    if (msg.onOffToggle !== undefined) {
-                        crownstoneOnOffToggle = msg.onOffToggle;
+                    if (msg.onOff !== undefined) {
+                        crownstoneOnOff = msg.onOff;
                     }
-                    if (crownstoneOnOffToggle){
+                    if (crownstoneOnOff){
                         await crownstone.turnOn();
                         done();
                         return;
