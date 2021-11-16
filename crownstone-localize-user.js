@@ -50,12 +50,14 @@ module.exports = function(RED) {
 
                 // Get location id
                 let userLocationId = user.locations[0];
-                msg.locationId = userLocationId;
+                //msg.locationId = userLocationId;
 
                 // Get location name
                 let locations = await cloud.locations();
                 let userLocationName = locations.find(location => location.id === userLocationId).name;
-                msg.locationName = userLocationName;
+                //msg.locationName = userLocationName;
+
+                msg.payload = {"locationName":userLocationName, "locationId":userLocationId};
 
                 send(msg);
             })().catch((e) => {
