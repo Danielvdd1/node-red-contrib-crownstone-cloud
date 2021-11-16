@@ -23,7 +23,7 @@ module.exports = function(RED) {
                 }
 
                 // Request the sphere id from the location
-                let locations = await cloud.locations(); // Note: Is it posible to avoid this delay
+                let locations = await cloud.locations(); // Note: This delay can be avoided by letting the user select the sphere.
                 let sphereId = locations.find(l => l.id === locationId).sphereId;
 
                 // Get the sphere
@@ -40,13 +40,27 @@ module.exports = function(RED) {
                 let users = [];
                 for (let user of presentPeople) {
                     if(user.locations.find(l => l === locationId)){
-                        users.push({"id":user.userId});
+                        users.push({"userId":user.userId});
+                    }
+                }
+                //msg.users = users; // List of user ids
+
+                // Get names of all users
+	            let allUsers = await sphere.users();
+                let allUsersMapped = [];
+                for (let level in allUsers) {
+                    for (let user of allUsers[level]) {
+                        allUsersMapped.push({"userId":user.id, "firstName":user.firstName, "lastName":user.lastName});
                     }
                 }
 
-                msg.users = users;
-
-                // TODO: Get usernames ?
+                // Map users to create a list of user ids and namef from users that are present in a location
+                let users2 = [];
+                for (let user of users) {
+                    let userData = allUsersMapped.find(u => u.userId === user.userId);
+                    users2.push(userData);
+                }
+                msg.payload = users2; // List of ids, firstNames and lastNames
 
                 send(msg);
             })().catch((e) => {
