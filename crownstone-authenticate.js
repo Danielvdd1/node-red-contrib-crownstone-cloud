@@ -16,8 +16,7 @@ module.exports = function(RED) {
             await cloud.loginHashed(email, cloud.hashPassword(password));
         }
         loginUser().catch((e) => {
-            console.log("There was a problem authenticating the user:", e);
-            node.error("There was a problem authenticating the user");
+            node.error("There was a problem authenticating the user", msg);
         });
 
 
