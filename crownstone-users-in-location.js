@@ -65,12 +65,12 @@ module.exports = function(RED) {
                 send(msg);
             })().catch((e) => {
                 if (e.statusCode === 401){
-                    console.log("Authorization Required:", e);
                     node.error("Authorization Required");
+                    node.error("Authorization Required", msg);
                 }
                 else{
-                    console.log("There was a problem localizing the user:", e);
-                    node.error("There was a problem localizing the user");
+                    node.error("There was a problem requesting users in the location");
+                    node.error("There was a problem requesting users in the location", msg);
                 }
             });
         });
