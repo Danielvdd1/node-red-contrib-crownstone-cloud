@@ -90,5 +90,53 @@
 </script>
 
 <script type="text/html" data-help-name="crownstone switch crownstone">
-    <p>Switch Crownstones with the REST API.</p>
+    <p>Switch Crownstones with the Crownstone cloud.</p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt class="optional">crownstoneId<span class="property-type">string</span></dt>
+        <dd>The id of the Crownstone.</dd>
+        <dt class="optional">onOff<span class="property-type">boolean</span></dt>
+        <dd>The new state of a non-dimmable Crownstone.</dd>
+        <dt class="optional">dimPercentage<span class="property-type">number</span></dt>
+        <dd>The new dim percentage of a dimmable Crownstone.</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <ol class="node-ports">
+        <li>Authorization required error
+            <dl class="message-properties">
+                <dt>payload<span class="property-type">object</span></dt>
+                <dd>The standard error of the command.</dd>
+            </dl>
+        </li>
+        <li>Standard error
+            <dl class="message-properties">
+                <dt>payload<span class="property-type">object</span></dt>
+                <dd>The standard error of the command.</dd>
+            </dl>
+        </li>
+    </ol>
+
+    <h3>Details</h3>
+    <p>This node can be used to switch or dim a Crownstone.</p>
+    <p>The new state is dependent on if the Crownstone is dimmable or not.
+        If the Crownstone is dimmable, the new state is set with a boolean checkbox.
+        If the Crownstone is not dimmable, the dim percentage is set with a percentage value.
+    </p>
+    <p>The Crownstone and new state can be configured with the properties menu.
+        To change the Crownstone on the go, the id of the Crownstone can be set with <code>msg.crownstoneId</code>.
+        If the Crownstone is not dimmable, set the new state with <code>msg.onOff</code>.
+        If the Crownstone is dimmable, set the percentage with <code>msg.dimPercentage</code>.
+        These two properties can be used interchanged without problem.
+    </p>
+    <p>This node is dependent on the Crownstone authenticate node.
+        Import the Crownstone authenticate node in the project to make use of the features of this node.
+    </p>
+
+    <h3>References</h3>
+    <ul>
+        <li><a href="https:crownstone.rocks/">Crownstone</a> - Crownstone website</li>
+        <li><a href="https://github.com/Danielvdd1/node-red-contrib-crownstone-rest-api/">GitHub</a> - the nodes github repository</li>
+    </ul>
 </script>

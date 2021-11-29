@@ -35,5 +35,27 @@
 </script>
 
 <script type="text/html" data-help-name="crownstone authenticate">
-    <p>Authenticate the user to communicate with the Crownstone cloud.</p>
+    <p>Log in to make use of the Crownstone cloud.</p>
+
+    <h3>Outputs</h3>
+    <ol class="node-ports">
+        <li>Authentication error
+            <dl class="message-properties">
+                <dt>payload<span class="property-type">object</span></dt>
+                <dd>The standard error of the command.</dd>
+            </dl>
+        </li>
+    </ol>
+
+    <h3>Details</h3>
+    <p>This node is to authenticate the user to communicate with the Crownstone cloud.</p>
+    <p>Enter the email and password in the node that is used to access the <a href="https:my.crownstone.rocks/">Crownstone cloud</a>.</p>
+    <p>The authentication is done directly when Node-RED starts. The authentication node can be triggered to get a new access token.</p>
+    <p>A cloud object is stored in global context and is used by other Crownstone nodes.</p>
+    
+    <h3>References</h3>
+    <ul>
+        <li><a href="https:crownstone.rocks/">Crownstone</a> - Crownstone website</li>
+        <li><a href="https://github.com/Danielvdd1/node-red-contrib-crownstone-rest-api/">GitHub</a> - the nodes github repository</li>
+    </ul>
 </script>

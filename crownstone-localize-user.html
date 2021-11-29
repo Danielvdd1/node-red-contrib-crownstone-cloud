@@ -98,5 +98,52 @@
 </script>
 
 <script type="text/html" data-help-name="crownstone localize user">
-    <p>Get the location of a user with the REST API.</p>
+    <p>Get the location of a user with the Crownstone cloud.</p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt class="optional">sphereId<span class="property-type">string</span></dt>
+        <dd>The id of the sphere.</dd>
+        <dt class="optional">userId<span class="property-type">string</span></dt>
+        <dd>The id of the user.</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <ol class="node-ports">
+        <li>Standard output
+            <dl class="message-properties">
+                <dt>payload<span class="property-type">object</span></dt>
+                <dd>An object containing location information.<code>{"locationId":string, "locationName":string}</code></dd>
+            </dl>
+        </li>
+        <li>Authorization required error
+            <dl class="message-properties">
+                <dt>payload<span class="property-type">object</span></dt>
+                <dd>The standard error of the command.</dd>
+            </dl>
+        </li>
+        <li>Standard error
+            <dl class="message-properties">
+                <dt>payload<span class="property-type">object</span></dt>
+                <dd>The standard error of the command.</dd>
+            </dl>
+        </li>
+    </ol>
+
+    <h3>Details</h3>
+    <p>This node can be used to get the location of a user.</p>
+    <p>The user to get the location from can be configured with the properties menu.
+        To change the user on the go, the id of the user can be set in <code>msg.userId</code>.
+        The Sphere can also be configured with <code>msg.sphereId</code>.
+    </p>
+    <p>This node returns an object with the location id and location name in <code>msg.payload</code>.</p>
+    <p>This node is dependent on the Crownstone authenticate node.
+        Import the Crownstone authenticate node in the project to make use of the features of this node.
+    </p>
+
+    <h3>References</h3>
+    <ul>
+        <li><a href="https:crownstone.rocks/">Crownstone</a> - Crownstone website</li>
+        <li><a href="https://github.com/Danielvdd1/node-red-contrib-crownstone-rest-api/">GitHub</a> - the nodes github repository</li>
+    </ul>
 </script>
