@@ -32,12 +32,23 @@
             }
 
             $.getJSON('spheres/' + node.id,function(data) {
+                // Hide sphere selection when there is one sphere available.
+                if (data.length === 1) {
+                    $('#input-sphereName').hide();
+                    $('#node-input-sphereId').val(data[0].id)
+                }
+                
                 // Generate drop-down list
                 for (let sphere of data) {
                     $('#node-input-sphereName').append(`<option value="${sphere.id}">${sphere.name}</option>`);
                 }
                 // Highlight selected item
                 $('#node-input-sphereName').val($('#node-input-sphereId').val());
+                
+                if ($('#node-input-sphereId').val()){
+                    let sphereId = $('#node-input-sphereId').val();
+                    updateUserList(sphereId);
+                }
             });
 
             // Generate user list at start when a shpere is selected
@@ -70,7 +81,7 @@
     <div class="form-row form-row-sphereId" id="input-sphereId" hidden>
         <input type="text" id="node-input-sphereId">
     </div>
-    <div class="form-row form-row-sphereName">
+    <div class="form-row form-row-sphereName" id="input-sphereName" >
         <label for="node-input-sphereName"><i class="fa fa-user"></i> Sphere</span></label>
         <select type="text" id="node-input-sphereName" style="width: 250px;">
         </select>
