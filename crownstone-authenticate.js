@@ -11,13 +11,19 @@ module.exports = function(RED) {
         var email = this.credentials.email;
         var password = this.credentials.password;
 
-        // Login user
-        async function loginUser() {
-            await cloud.loginHashed(email, cloud.hashPassword(password));
+
+        function loginUser(msg){
+            (async() => {
+                await cloud.loginHashed(email, cloud.hashPassword(password));
+            })().catch((e) => {
+                msg.payload = e;
+                node.error("There was a problem authenticating the user", msg);
+            });
         }
-        loginUser().catch((e) => {
-            node.error("There was a problem authenticating the user", msg);
-        });
+
+        // Authenticate at the start
+        var newMsg = {};
+        loginUser(newMsg);
 
 
         // Store the cloud object in global context
@@ -26,7 +32,8 @@ module.exports = function(RED) {
 
         // Input event
         node.on('input', function(msg, send, done) {
-            loginUser();
+            // Authenticate when the node is triggered
+            loginUser(msg);
             
             done();
         });

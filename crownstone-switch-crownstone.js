@@ -64,9 +64,11 @@ module.exports = function(RED) {
                 }
             })().catch((e) => {
                 if (e.statusCode === 401){
+                    msg.payload = e;
                     node.error("Authorization Required", msg);
                 }
                 else{
+                    msg.payload = e;
                     node.error("There was a problem switching the Crownstone", msg);
                 }
             });

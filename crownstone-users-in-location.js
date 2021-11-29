@@ -66,9 +66,11 @@ module.exports = function(RED) {
                 send(msg);
             })().catch((e) => {
                 if (e.statusCode === 401){
+                    msg.payload = e;
                     node.error("Authorization Required", msg);
                 }
                 else{
+                    msg.payload = e;
                     node.error("There was a problem requesting users in the location", msg);
                 }
             });
