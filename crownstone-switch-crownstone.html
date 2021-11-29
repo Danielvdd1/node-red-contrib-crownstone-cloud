@@ -46,12 +46,18 @@
 
                 
                 // Show dimming or switching input field on start
-                var dimming = requestData.find(a => a.id === $('#node-input-crownstoneId').val()).dimming;
-                updateInputTypeDimming(dimming);
+                var crownstoneId = $('#node-input-crownstoneId').val();
+                var crownstone = requestData.find(a => a.id === crownstoneId);
+                if (crownstone !== undefined){
+                    updateInputTypeDimming(crownstone.dimming);
+                }
                 // Show dimming or switching input field on change
                 $('#node-input-crownstoneName').on("change", function() {
-                    var dimming = requestData.find(a => a.id === $(this).val()).dimming;
-                    updateInputTypeDimming(dimming);
+                    var crownstoneId = $(this).val();
+                    var crownstone = requestData.find(a => a.id === crownstoneId);
+                    if (crownstone !== undefined){
+                        updateInputTypeDimming(crownstone.dimming);
+                    }
                 });
             });
         },
