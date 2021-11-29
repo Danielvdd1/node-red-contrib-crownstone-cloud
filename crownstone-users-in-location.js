@@ -95,9 +95,15 @@ module.exports = function(RED) {
         (async() => {
             // Request locations
             let locations = await cloud.locations();
+            // Request spheres
+            let spheres = await cloud.spheres();
 
             // Map the list of locations to a more compact format
-            let locationsMapped = locations.map(location => ({"id":location.id, "name":location.name}));
+            let locationsMapped = [];
+            for (let location of locations) {
+                sphereName = spheres.find(sphere => sphere.id === location.sphereId).name;
+                locationsMapped.push({"id":location.id, "name":location.name, "sphereName":sphereName});
+            }
 
             // res.setHeader('Cache-Control', 'max-age=120, public');
             res.json(locationsMapped);
