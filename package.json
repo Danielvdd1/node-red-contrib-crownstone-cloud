@@ -12,12 +12,15 @@
   },
   "author": "Daniël",
   "license": "ISC",
-  "keywords": [ "node-red", "crownstone" ],
+  "keywords": [
+    "node-red",
+    "crownstone"
+  ],
   "dependencies": {
     "crownstone-cloud": "^0.26",
     "crypto-js": "^3.1.9-1"
   },
-  "node-red" : {
+  "node-red": {
     "nodes": {
       "crownstone-authenticate": "crownstone-authenticate.js",
       "crownstone-request-user-data": "crownstone-request-user-data.js",

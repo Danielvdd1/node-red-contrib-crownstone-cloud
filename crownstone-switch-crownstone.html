@@ -10,7 +10,6 @@
         },
         inputs:1,
         outputs:0,
-        align: 'left',
         icon: "icons/crownstone_logo_black.svg",
         label: function() {
             return this.name||"Crownstone switch Crownstone";
@@ -32,10 +31,7 @@
             }
 
             $.getJSON('crownstones/' + node.id,function(data) {
-                // Copy data for later use when the change event is activated.
-                //requestData = $.extend(true, {}, data);
                 requestData = data;
-
 
                 // Generate drop-down list
                 for (let crownstone of data) {
@@ -44,7 +40,6 @@
                 // Highlight selected item
                 $('#node-input-crownstoneName').val($('#node-input-crownstoneId').val());
 
-                
                 // Show dimming or switching input field on start
                 var crownstoneId = $('#node-input-crownstoneId').val();
                 var crownstone = requestData.find(a => a.id === crownstoneId);

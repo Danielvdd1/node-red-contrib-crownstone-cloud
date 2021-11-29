@@ -32,6 +32,7 @@ module.exports = function(RED) {
                 // Request present people in the sphere
                 let presentPeople = await sphere.presentPeople();
                 if (presentPeople.length === 0) { // No present people
+                    msg.payload = [];
                     send(msg);
                     return;
                 }
@@ -54,7 +55,7 @@ module.exports = function(RED) {
                     }
                 }
 
-                // Map users to create a list of user ids and namef from users that are present in a location
+                // Map users to create a list of user ids and names from users that are present in a location
                 let users2 = [];
                 for (let user of users) {
                     let userData = allUsersMapped.find(u => u.userId === user.userId);
@@ -75,7 +76,7 @@ module.exports = function(RED) {
     }
     RED.nodes.registerType("crownstone users in location", CrownstoneUsersInLocation);
 
-    // This section is for the oneditprepare event in the browser to get a list of spheres.
+    // This section is for the oneditprepare event in the browser to get a list of locations.
     RED.httpAdmin.get("/locations/:id", function(req,res) {
         var node = RED.nodes.getNode(req.params.id); // This is a reference to the currently deployed node in runtime. This does not work if the user just dragged the node on the workspace.
         if (node === null) { // Node with the given id does not exist

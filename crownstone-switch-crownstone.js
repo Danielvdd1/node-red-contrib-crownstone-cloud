@@ -4,7 +4,7 @@ module.exports = function(RED) {
         var node = this;
 
         // Input field values
-        var crownstoneId = config.crownstoneId||"";
+        var crownstoneId = config.crownstoneId;
         var crownstoneOnOff = config.onOff;
         var crownstoneDimPercentage = config.dimPercentage;
 
@@ -14,17 +14,6 @@ module.exports = function(RED) {
 
         // Wait one tick of the event loop in case the authenticate node runs later and did not yet store the cloud in global context
         setImmediate(() => {cloud = globalContext.get("crownstoneCloud");});
-
-        /*
-        async function requestCrownstones() {
-            console.log("Debug: Crownstones");
-            let cs = await cloud.crownstones();
-            console.log(cs);
-            // Lambda expression to filter the crownstones on their name and return only the id's
-            //console.log(cs.map(cs => ({"name":cs.name, "id":cs.id})));
-        }
-        requestCrownstones().catch((e) => { console.log("There was a problem requesting Crownstone information at the beginning of the code:", e); });
-        */
 
         
         // Input event
@@ -45,6 +34,14 @@ module.exports = function(RED) {
                 if(dimmable){
                     if (msg.dimPercentage !== undefined) {
                         crownstoneDimPercentage = msg.dimPercentage;
+                    }
+                    else if (msg.onOff !== undefined) {
+                        if(msg.onOff){
+                            crownstoneDimPercentage = 100;
+                        }
+                        else{
+                            crownstoneDimPercentage = 0;
+                        }
                     }
                     await crownstone.setSwitch(crownstoneDimPercentage);
                     done();
