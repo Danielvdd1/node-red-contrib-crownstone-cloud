@@ -22,6 +22,16 @@
                 }
                 // Highlight selected item
                 $('#node-input-locationName').val($('#node-input-locationId').val());
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {                
+                if (jqXHR.status === 400){
+                    // Show the tip to Deploy the code
+                    $('#tip-deploy').show();
+                }
+                else if (jqXHR.status === 401){
+                    // Show the tip to add the Crownstone authenticate node
+                    $('#tip-authenticate').show();
+                }
             });
         },
         oneditsave: function() {
@@ -41,10 +51,13 @@
         <input type="text" id="node-input-locationId">
     </div>
     <div class="form-row form-row-locationName">
-        <label for="node-input-locationName"><i class="fa fa-map-marker"></i> Location</span></label>
+        <label for="node-input-locationName"><i class="fa fa-map-marker"></i> Location</label>
         <select type="text" id="node-input-locationName" style="width: 250px;">
         </select>
     </div>
+
+    <div class="form-tips" id="tip-authenticate" hidden><b>Tip:</b> Add the Crowsntone authenticate node to the flow to authenticate the user and make use of this node.</div>
+    <div class="form-tips" id="tip-deploy" hidden><b>Tip:</b> Deploy the flow first before the list can be created.</div>
 </script>
 
 <script type="text/html" data-help-name="crownstone users in location">

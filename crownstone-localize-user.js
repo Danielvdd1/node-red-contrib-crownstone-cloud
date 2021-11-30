@@ -79,19 +79,19 @@ module.exports = function(RED) {
         var node = RED.nodes.getNode(req.params.id); // This is a reference to the currently deployed node in runtime. This does not work if the user just dragged the node on the workspace.
         if (node === null) { // Node with the given id does not exist
             res.statusCode = 400;
-            res.json([]);
+            res.end();
             return;
         }
         var globalContext = node.context().global;
         var cloud = globalContext.get("crownstoneCloud");
         if (cloud === undefined) { // Cloud object is not stored in global context
-            res.statusCode = 400;
-            res.json([]);
+            res.statusCode = 401;
+            res.end();
             return;
         }
 
         (async() => {
-            // Request users from the sphere
+            // Request spheres
             let spheres = await cloud.spheres();
 
             // Map the list of spheres to a more compact format
@@ -107,20 +107,20 @@ module.exports = function(RED) {
         var node = RED.nodes.getNode(req.params.id); // This is a reference to the currently deployed node in runtime. This does not work if the user just dragged the node on the workspace.
         if (node === null) { // Node with the given id does not exist
             res.statusCode = 400;
-            res.json([]);
+            res.end();
             return;
         }
         var globalContext = node.context().global;
         var cloud = globalContext.get("crownstoneCloud");
         if (cloud === undefined) { // Cloud object is not stored in global context
-            res.statusCode = 400;
-            res.json([]);
+            res.statusCode = 401;
+            res.end();
             return;
         }
 
         let sphere = cloud.sphere(req.params.sphereId);
         if (sphere === undefined) { // Choosen sphere not present
-            res.statusCode = 400;
+            res.statusCode = 400; // TODO: Other response code?
             res.json([]);
             return;
         }

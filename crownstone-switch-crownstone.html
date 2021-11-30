@@ -54,6 +54,16 @@
                         updateInputTypeDimming(crownstone.dimming);
                     }
                 });
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {                
+                if (jqXHR.status === 400){
+                    // Show the tip to Deploy the code
+                    $('#tip-deploy').show();
+                }
+                else if (jqXHR.status === 401){
+                    // Show the tip to add the Crownstone authenticate node
+                    $('#tip-authenticate').show();
+                }
             });
         },
         oneditsave: function() {
@@ -73,7 +83,7 @@
         <input type="text" id="node-input-crownstoneId">
     </div>
     <div class="form-row form-row-crownstoneName">
-        <label for="node-input-crownstoneName"><i class="fa fa-plug"></i> Crownstone name</span></label>
+        <label for="node-input-crownstoneName"><i class="fa fa-plug"></i> Crownstone name</label>
         <select type="text" id="node-input-crownstoneName" style="width: 250px;">
         </select>
     </div>
@@ -87,6 +97,9 @@
         <label for="node-input-dimPercentage"><i class="fa fa-percent"></i> Dim percentage</label>
         <input type="text" id="node-input-dimPercentage" placeholder="%">
     </div>
+
+    <div class="form-tips" id="tip-authenticate" hidden><b>Tip:</b> Add the Crowsntone authenticate node to the flow to authenticate the user and make use of this node.</div>
+    <div class="form-tips" id="tip-deploy" hidden><b>Tip:</b> Deploy the flow first before the list can be created.</div>
 </script>
 
 <script type="text/html" data-help-name="crownstone switch crownstone">

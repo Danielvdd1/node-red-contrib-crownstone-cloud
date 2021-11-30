@@ -49,6 +49,16 @@
                     let sphereId = $('#node-input-sphereId').val();
                     updateUserList(sphereId);
                 }
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {                
+                if (jqXHR.status === 400){
+                    // Show the tip to Deploy the code
+                    $('#tip-deploy').show();
+                }
+                else if (jqXHR.status === 401){
+                    // Show the tip to add the Crownstone authenticate node
+                    $('#tip-authenticate').show();
+                }
             });
 
             // Generate user list at start when a shpere is selected
@@ -81,8 +91,8 @@
     <div class="form-row form-row-sphereId" id="input-sphereId" hidden>
         <input type="text" id="node-input-sphereId">
     </div>
-    <div class="form-row form-row-sphereName" id="input-sphereName" >
-        <label for="node-input-sphereName"><i class="fa fa-user"></i> Sphere</span></label>
+    <div class="form-row form-row-sphereName" id="input-sphereName">
+        <label for="node-input-sphereName"><i class="fa fa-user"></i> Sphere</label>
         <select type="text" id="node-input-sphereName" style="width: 250px;">
         </select>
     </div>
@@ -91,10 +101,13 @@
         <input type="text" id="node-input-userId">
     </div>
     <div class="form-row form-row-userName" id="input-userName" hidden>
-        <label for="node-input-userName"><i class="fa fa-user"></i> Username</span></label>
+        <label for="node-input-userName"><i class="fa fa-user"></i> Username</label>
         <select type="text" id="node-input-userName" style="width: 250px;">
         </select>
     </div>
+
+    <div class="form-tips" id="tip-authenticate" hidden><b>Tip:</b> Add the Crowsntone authenticate node to the flow to authenticate the user and make use of this node.</div>
+    <div class="form-tips" id="tip-deploy" hidden><b>Tip:</b> Deploy the flow first before the list can be created.</div>
 </script>
 
 <script type="text/html" data-help-name="crownstone localize user">
