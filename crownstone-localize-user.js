@@ -119,8 +119,8 @@ module.exports = function(RED) {
         }
 
         let sphere = cloud.sphere(req.params.sphereId);
-        if (sphere === undefined) { // Choosen sphere not present
-            res.statusCode = 400; // TODO: Other response code?
+        if (sphere === undefined) { // Choosen sphere not present or accessable by this user
+            res.statusCode = 403;
             res.json([]);
             return;
         }
