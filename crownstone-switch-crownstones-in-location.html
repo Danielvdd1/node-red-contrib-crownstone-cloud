@@ -1,0 +1,112 @@
+<script type="text/javascript">
+    RED.nodes.registerType('crownstone switch crownstones in location',{
+        category: 'Crownstone',
+        color: '#FFFFFF',
+        defaults: {
+            name: {value:""},
+            locationId: {value:""},
+            onOff: {value:false}
+        },
+        inputs:1,
+        outputs:0,
+        icon: "icons/crownstone_logo_black.svg",
+        label: function() {
+            return this.name||"Crownstone switch Crownstones in location";
+        },
+        oneditprepare: function() {
+            var node = this;
+
+            $.getJSON('locations/' + node.id,function(data) {
+                // Generate drop-down list
+                for (let location of data) {
+                    $('#node-input-locationName').append(`<option value="${location.id}" title="${location.sphereName}">${location.name}</option>`);
+                }
+                // Highlight selected item
+                $('#node-input-locationName').val($('#node-input-locationId').val());
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {                
+                if (jqXHR.status === 400){
+                    // Show the tip to Deploy the code
+                    $('#tip-deploy').show();
+                }
+                else if (jqXHR.status === 401){
+                    // Show the tip to add the Crownstone authenticate node
+                    $('#tip-authenticate').show();
+                }
+            });
+        },
+        oneditsave: function() {
+            // Put the chosen location in the hidden field
+            $('#node-input-locationId').val($('#node-input-locationName').val());
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="crownstone switch crownstones in location">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+
+    <div class="form-row form-row-locationId" id="input-locationId" hidden>
+        <input type="text" id="node-input-locationId">
+    </div>
+    <div class="form-row form-row-locationName">
+        <label for="node-input-locationName"><i class="fa fa-map-marker"></i> Location</label>
+        <select type="text" id="node-input-locationName" style="width: 250px;">
+        </select>
+    </div>
+
+    <div class="form-row form-row-onOff" id="input-onOff">
+        <label for="node-input-onOff"><i class="fa fa-toggle-on"></i> New State</label>
+        <input type="checkbox" id="node-input-onOff" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-onOff" style="width: 70%;">On/Off</label>
+    </div>
+
+    <div class="form-tips" id="tip-authenticate" hidden><b>Tip:</b> Add the Crowsntone authenticate node to the flow to authenticate the user and make use of this node.</div>
+    <div class="form-tips" id="tip-deploy" hidden><b>Tip:</b> Deploy the flow first before the list can be created.</div>
+</script>
+
+<script type="text/html" data-help-name="crownstone switch crownstones in location">
+    <p>Switch all Crownstones in a location with the Crownstone cloud.</p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt class="optional">locationId<span class="property-type">string</span></dt>
+        <dd>The id of the location.</dd>
+        <dt class="optional">onOff<span class="property-type">boolean</span></dt>
+        <dd>The new state of a Crownstone.</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <ol class="node-ports">
+        <li>Authorization required error
+            <dl class="message-properties">
+                <dt>payload<span class="property-type">object</span></dt>
+                <dd>The standard error of the command.</dd>
+            </dl>
+        </li>
+        <li>Standard error
+            <dl class="message-properties">
+                <dt>payload<span class="property-type">object</span></dt>
+                <dd>The standard error of the command.</dd>
+            </dl>
+        </li>
+    </ol>
+
+    <h3>Details</h3>
+    <p>This node can be used to switch all Crownstones in a location.</p>
+    <p>The Crownstone and new state can be configured with the properties menu.
+        To change the location on the go, the id of the location can be set with <code>msg.locationId</code>.
+        Set the new state with <code>msg.onOff</code>.
+    </p>
+    <p>This node is dependent on the Crownstone authenticate node.
+        Import the Crownstone authenticate node in the project to make use of the features of this node.
+    </p>
+
+    <h3>References</h3>
+    <ul>
+        <li><a href="https:crownstone.rocks/">Crownstone</a> - Crownstone website</li>
+        <li><a href="https://github.com/Danielvdd1/node-red-contrib-crownstone-rest-api/">GitHub</a> - the nodes github repository</li>
+    </ul>
+</script>

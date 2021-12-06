@@ -26,7 +26,8 @@
       "crownstone-request-user-data": "crownstone-request-user-data.js",
       "crownstone-switch-crownstone": "crownstone-switch-crownstone.js",
       "crownstone-localize-user": "crownstone-localize-user.js",
-      "crownstone-users-in-location": "crownstone-users-in-location.js"
+      "crownstone-users-in-location": "crownstone-users-in-location.js",
+      "crownstone-switch-crownstones-in-location": "crownstone-switch-crownstones-in-location.js"
     }
   }
 }
