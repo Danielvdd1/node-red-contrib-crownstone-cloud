@@ -8,6 +8,10 @@ module.exports = function(RED) {
         const cloud = new csLib.CrownstoneCloud();
 
         // Input field values
+        if (node.credentials === undefined) {
+            node.warn("No credentials");
+            return;
+        }
         var email = this.credentials.email;
         var password = this.credentials.password;
 
