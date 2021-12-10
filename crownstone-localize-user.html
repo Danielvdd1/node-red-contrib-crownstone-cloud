@@ -1,26 +1,26 @@
 <script type="text/javascript">
-    RED.nodes.registerType('crownstone localize user',{
+    RED.nodes.registerType('crownstone localize user', {
         category: 'Crownstone',
         color: '#FFFFFF',
         defaults: {
-            name: {value:""},
-            sphereId: {value:""},
-            userId: {value:""}
+            name: { value: "" },
+            sphereId: { value: "" },
+            userId: { value: "" }
         },
-        inputs:1,
-        outputs:1,
+        inputs: 1,
+        outputs: 1,
         icon: "icons/crownstone_logo_black.svg",
-        label: function() {
-            return this.name||"Crownstone localize user";
+        label: function () {
+            return this.name || "Crownstone localize user";
         },
-        oneditprepare: function() {
+        oneditprepare: function () {
             var node = this;
             var sphereId = $('#node-input-sphereId').val();
 
             // Function to uptate the user list depenting on the selected sphere
             function updateUserList(sphereId) {
                 $('#input-userName').show();
-                $.getJSON('users/' + node.id + '/' + sphereId,function(data) {
+                $.getJSON('users/' + node.id + '/' + sphereId, function (data) {
                     // Generate drop-down list
                     $('#node-input-userName').empty();
                     for (let user of data) {
@@ -31,49 +31,48 @@
                 });
             }
 
-            $.getJSON('spheres/' + node.id,function(data) {
+            $.getJSON('spheres/' + node.id, function (data) {
                 // Hide sphere selection when there is one sphere available.
                 if (data.length === 1) {
                     $('#input-sphereName').hide();
                     $('#node-input-sphereId').val(data[0].id)
                 }
-                
+
                 // Generate drop-down list
                 for (let sphere of data) {
                     $('#node-input-sphereName').append(`<option value="${sphere.id}">${sphere.name}</option>`);
                 }
                 // Highlight selected item
                 $('#node-input-sphereName').val($('#node-input-sphereId').val());
-                
-                if ($('#node-input-sphereId').val()){
+
+                if ($('#node-input-sphereId').val()) {
                     let sphereId = $('#node-input-sphereId').val();
                     updateUserList(sphereId);
                 }
-            })
-            .fail(function(jqXHR, textStatus, errorThrown) {                
-                if (jqXHR.status === 400){
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status === 400) {
                     // Show the tip to Deploy the code
                     $('#tip-deploy').show();
                 }
-                else if (jqXHR.status === 401){
+                else if (jqXHR.status === 401) {
                     // Show the tip to add the Crownstone authenticate node
                     $('#tip-authenticate').show();
                 }
             });
 
             // Generate user list at start when a shpere is selected
-            if ($('#node-input-sphereId').val()){
+            if ($('#node-input-sphereId').val()) {
                 let sphereId = $('#node-input-sphereId').val();
                 updateUserList(sphereId);
             }
 
             // Generate user list when a sphere is selected
-            $('#node-input-sphereName').on("change", function() {
+            $('#node-input-sphereName').on("change", function () {
                 let sphereId = $('#node-input-sphereName').val();
                 updateUserList(sphereId);
             });
         },
-        oneditsave: function() {
+        oneditsave: function () {
             // Put the chosen sphere in the hidden field
             $('#node-input-sphereId').val($('#node-input-sphereName').val());
             // Put the chosen user in the hidden field

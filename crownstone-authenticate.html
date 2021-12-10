@@ -1,19 +1,19 @@
 <script type="text/javascript">
-    RED.nodes.registerType('crownstone authenticate',{
+    RED.nodes.registerType('crownstone authenticate', {
         category: 'Crownstone',
         color: '#FFFFFF',
         defaults: {
-            name: {value:""}
+            name: { value: "" }
         },
         credentials: {
-            email: {type:"text"},
-            password: {type:"password"}
+            email: { type: "text" },
+            password: { type: "password" }
         },
-        inputs:1,
-        outputs:0,
+        inputs: 1,
+        outputs: 0,
         icon: "icons/crownstone_logo_black.svg",
-        label: function() {
-            return this.name||"Crownstone authenticate";
+        label: function () {
+            return this.name || "Crownstone authenticate";
         }
     });
 </script>

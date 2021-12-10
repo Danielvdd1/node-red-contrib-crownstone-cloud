@@ -1,6 +1,6 @@
-module.exports = function(RED) {
+module.exports = function (RED) {
     function CrownstoneLocalizeUser(config) {
-        RED.nodes.createNode(this,config);
+        RED.nodes.createNode(this, config);
         var node = this;
 
         // Input field values
@@ -12,16 +12,16 @@ module.exports = function(RED) {
         var cloud;
 
         // Wait one tick of the event loop in case the authenticate node runs later and did not yet store the cloud in global context
-        setImmediate(() => {cloud = globalContext.get("crownstoneCloud");});
+        setImmediate(() => { cloud = globalContext.get("crownstoneCloud"); });
 
-        
+
         // Input event
-        node.on('input', function(msg, send, done) {
+        node.on('input', function (msg, send, done) {
 
-            (async() => {
-                if (msg.userId !== undefined){
+            (async () => {
+                if (msg.userId !== undefined) {
                     userId = msg.userId;
-                    if (msg.sphereId !== undefined){
+                    if (msg.sphereId !== undefined) {
                         sphereId = msg.sphereId;
                     }
                 }
@@ -42,7 +42,7 @@ module.exports = function(RED) {
                     send(msg);
                     return;
                 }
-                
+
                 if (user.locations.length === 0) { // User not in a location
                     send(msg);
                     return;
@@ -57,15 +57,15 @@ module.exports = function(RED) {
                 let userLocationName = locations.find(location => location.id === userLocationId).name;
                 //msg.locationName = userLocationName;
 
-                msg.payload = {"locationName":userLocationName, "locationId":userLocationId};
+                msg.payload = { "locationName": userLocationName, "locationId": userLocationId };
 
                 send(msg);
             })().catch((e) => {
-                if (e.statusCode === 401){
+                if (e.statusCode === 401) {
                     msg.payload = e;
                     node.error("Authorization Required", msg);
                 }
-                else{
+                else {
                     msg.payload = e;
                     node.error("There was a problem localizing the user", msg);
                 }
@@ -75,7 +75,7 @@ module.exports = function(RED) {
     RED.nodes.registerType("crownstone localize user", CrownstoneLocalizeUser);
 
     // This section is for the oneditprepare event in the browser to get a list of spheres.
-    RED.httpAdmin.get("/spheres/:id", function(req,res) {
+    RED.httpAdmin.get("/spheres/:id", function (req, res) {
         var node = RED.nodes.getNode(req.params.id); // This is a reference to the currently deployed node in runtime. This does not work if the user just dragged the node on the workspace.
         if (node === null) { // Node with the given id does not exist
             res.statusCode = 400;
@@ -90,12 +90,12 @@ module.exports = function(RED) {
             return;
         }
 
-        (async() => {
+        (async () => {
             // Request spheres
             let spheres = await cloud.spheres();
 
             // Map the list of spheres to a more compact format
-            let spheresMapped = spheres.map(sphere => ({"id":sphere.id, "name":sphere.name}));
+            let spheresMapped = spheres.map(sphere => ({ "id": sphere.id, "name": sphere.name }));
 
             // res.setHeader('Cache-Control', 'max-age=120, public');
             res.json(spheresMapped);
@@ -103,7 +103,7 @@ module.exports = function(RED) {
     });
 
     // This section is for the oneditprepare event in the browser to get a list of users.
-    RED.httpAdmin.get("/users/:id/:sphereId", function(req,res) {
+    RED.httpAdmin.get("/users/:id/:sphereId", function (req, res) {
         var node = RED.nodes.getNode(req.params.id); // This is a reference to the currently deployed node in runtime. This does not work if the user just dragged the node on the workspace.
         if (node === null) { // Node with the given id does not exist
             res.statusCode = 400;
@@ -125,7 +125,7 @@ module.exports = function(RED) {
             return;
         }
 
-        (async() => {
+        (async () => {
             // Request users from the sphere
             let users = await sphere.users();
 
@@ -133,7 +133,7 @@ module.exports = function(RED) {
             let usersMapped = [];
             for (let level in users) {
                 for (let user of users[level]) {
-                    usersMapped.push({"id":user.id, "firstName":user.firstName, "lastName":user.lastName});
+                    usersMapped.push({ "id": user.id, "firstName": user.firstName, "lastName": user.lastName });
                 }
             }
 

@@ -1,6 +1,6 @@
-module.exports = function(RED) {
+module.exports = function (RED) {
     function CrownstoneUsersInLocation(config) {
-        RED.nodes.createNode(this,config);
+        RED.nodes.createNode(this, config);
         var node = this;
 
         // Input field values
@@ -11,14 +11,14 @@ module.exports = function(RED) {
         var cloud;
 
         // Wait one tick of the event loop in case the authenticate node runs later and did not yet store the cloud in global context
-        setImmediate(() => {cloud = globalContext.get("crownstoneCloud");});
+        setImmediate(() => { cloud = globalContext.get("crownstoneCloud"); });
 
-        
+
         // Input event
-        node.on('input', function(msg, send, done) {
+        node.on('input', function (msg, send, done) {
 
-            (async() => {
-                if (msg.locationId !== undefined){
+            (async () => {
+                if (msg.locationId !== undefined) {
                     locationId = msg.locationId;
                 }
 
@@ -40,18 +40,18 @@ module.exports = function(RED) {
                 // Get users in selected location
                 let users = [];
                 for (let user of presentPeople) {
-                    if(user.locations.find(l => l === locationId)){
-                        users.push({"userId":user.userId});
+                    if (user.locations.find(l => l === locationId)) {
+                        users.push({ "userId": user.userId });
                     }
                 }
                 //msg.users = users; // List of user ids
 
                 // Get names of all users
-	            let allUsers = await sphere.users();
+                let allUsers = await sphere.users();
                 let allUsersMapped = [];
                 for (let level in allUsers) {
                     for (let user of allUsers[level]) {
-                        allUsersMapped.push({"userId":user.id, "firstName":user.firstName, "lastName":user.lastName});
+                        allUsersMapped.push({ "userId": user.id, "firstName": user.firstName, "lastName": user.lastName });
                     }
                 }
 
@@ -65,11 +65,11 @@ module.exports = function(RED) {
 
                 send(msg);
             })().catch((e) => {
-                if (e.statusCode === 401){
+                if (e.statusCode === 401) {
                     msg.payload = e;
                     node.error("Authorization Required", msg);
                 }
-                else{
+                else {
                     msg.payload = e;
                     node.error("There was a problem requesting users in the location", msg);
                 }
@@ -79,7 +79,7 @@ module.exports = function(RED) {
     RED.nodes.registerType("crownstone users in location", CrownstoneUsersInLocation);
 
     // This section is for the oneditprepare event in the browser to get a list of locations.
-    RED.httpAdmin.get("/locations/:id", function(req,res) {
+    RED.httpAdmin.get("/locations/:id", function (req, res) {
         var node = RED.nodes.getNode(req.params.id); // This is a reference to the currently deployed node in runtime. This does not work if the user just dragged the node on the workspace.
         if (node === null) { // Node with the given id does not exist
             res.statusCode = 400;
@@ -94,7 +94,7 @@ module.exports = function(RED) {
             return;
         }
 
-        (async() => {
+        (async () => {
             // Request locations
             let locations = await cloud.locations();
             // Request spheres
@@ -104,7 +104,7 @@ module.exports = function(RED) {
             let locationsMapped = [];
             for (let location of locations) {
                 sphereName = spheres.find(sphere => sphere.id === location.sphereId).name;
-                locationsMapped.push({"id":location.id, "name":location.name, "sphereName":sphereName});
+                locationsMapped.push({ "id": location.id, "name": location.name, "sphereName": sphereName });
             }
 
             // res.setHeader('Cache-Control', 'max-age=120, public');

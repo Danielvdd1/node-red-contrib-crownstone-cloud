@@ -1,36 +1,36 @@
 <script type="text/javascript">
-    RED.nodes.registerType('crownstone switch crownstone',{
+    RED.nodes.registerType('crownstone switch crownstone', {
         category: 'Crownstone',
         color: '#FFFFFF',
         defaults: {
-            name: {value:""},
-            crownstoneId: {value:""},
-            onOff: {value:false},
-            dimPercentage: {value:0, validate:function(v) {return v !== "" && !isNaN(v) && (v >= 0 && v <= 100);}} // Validation function for percentages
+            name: { value: "" },
+            crownstoneId: { value: "" },
+            onOff: { value: false },
+            dimPercentage: { value: 0, validate: function (v) { return v !== "" && !isNaN(v) && (v >= 0 && v <= 100); } } // Validation function for percentages
         },
-        inputs:1,
-        outputs:0,
+        inputs: 1,
+        outputs: 0,
         icon: "icons/crownstone_logo_black.svg",
-        label: function() {
-            return this.name||"Crownstone switch Crownstone";
+        label: function () {
+            return this.name || "Crownstone switch Crownstone";
         },
-        oneditprepare: function() {
+        oneditprepare: function () {
             var node = this;
             var requestData;
 
             // Function to show or hide the corresponding input fields
-            function updateInputTypeDimming(dimming){
-                if(dimming){
+            function updateInputTypeDimming(dimming) {
+                if (dimming) {
                     $("#input-onOff").hide();
                     $("#input-dimPercentage").show();
                 }
-                else{
+                else {
                     $("#input-onOff").show();
                     $("#input-dimPercentage").hide();
                 }
             }
 
-            $.getJSON('crownstones/' + node.id,function(data) {
+            $.getJSON('crownstones/' + node.id, function (data) {
                 requestData = data;
 
                 // Generate drop-down list
@@ -43,30 +43,29 @@
                 // Show dimming or switching input field on start
                 var crownstoneId = $('#node-input-crownstoneId').val();
                 var crownstone = requestData.find(a => a.id === crownstoneId);
-                if (crownstone !== undefined){
+                if (crownstone !== undefined) {
                     updateInputTypeDimming(crownstone.dimming);
                 }
                 // Show dimming or switching input field on change
-                $('#node-input-crownstoneName').on("change", function() {
+                $('#node-input-crownstoneName').on("change", function () {
                     var crownstoneId = $(this).val();
                     var crownstone = requestData.find(a => a.id === crownstoneId);
-                    if (crownstone !== undefined){
+                    if (crownstone !== undefined) {
                         updateInputTypeDimming(crownstone.dimming);
                     }
                 });
-            })
-            .fail(function(jqXHR, textStatus, errorThrown) {                
-                if (jqXHR.status === 400){
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status === 400) {
                     // Show the tip to Deploy the code
                     $('#tip-deploy').show();
                 }
-                else if (jqXHR.status === 401){
+                else if (jqXHR.status === 401) {
                     // Show the tip to add the Crownstone authenticate node
                     $('#tip-authenticate').show();
                 }
             });
         },
-        oneditsave: function() {
+        oneditsave: function () {
             // Put the chosen Crownstone in the hidden field
             $('#node-input-crownstoneId').val($('#node-input-crownstoneName').val());
         }

@@ -1,41 +1,40 @@
 <script type="text/javascript">
-    RED.nodes.registerType('crownstone switch crownstones in location',{
+    RED.nodes.registerType('crownstone switch crownstones in location', {
         category: 'Crownstone',
         color: '#FFFFFF',
         defaults: {
-            name: {value:""},
-            locationId: {value:""},
-            onOff: {value:false}
+            name: { value: "" },
+            locationId: { value: "" },
+            onOff: { value: false }
         },
-        inputs:1,
-        outputs:0,
+        inputs: 1,
+        outputs: 0,
         icon: "icons/crownstone_logo_black.svg",
-        label: function() {
-            return this.name||"Crownstone switch Crownstones in location";
+        label: function () {
+            return this.name || "Crownstone switch Crownstones in location";
         },
-        oneditprepare: function() {
+        oneditprepare: function () {
             var node = this;
 
-            $.getJSON('locations/' + node.id,function(data) {
+            $.getJSON('locations/' + node.id, function (data) {
                 // Generate drop-down list
                 for (let location of data) {
                     $('#node-input-locationName').append(`<option value="${location.id}" title="${location.sphereName}">${location.name}</option>`);
                 }
                 // Highlight selected item
                 $('#node-input-locationName').val($('#node-input-locationId').val());
-            })
-            .fail(function(jqXHR, textStatus, errorThrown) {                
-                if (jqXHR.status === 400){
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status === 400) {
                     // Show the tip to Deploy the code
                     $('#tip-deploy').show();
                 }
-                else if (jqXHR.status === 401){
+                else if (jqXHR.status === 401) {
                     // Show the tip to add the Crownstone authenticate node
                     $('#tip-authenticate').show();
                 }
             });
         },
-        oneditsave: function() {
+        oneditsave: function () {
             // Put the chosen location in the hidden field
             $('#node-input-locationId').val($('#node-input-locationName').val());
         }
