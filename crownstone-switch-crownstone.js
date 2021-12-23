@@ -101,6 +101,6 @@ module.exports = function (RED) {
 
             // res.setHeader('Cache-Control', 'max-age=120, public');
             res.json(crownstonesMapped);
-        })()
+        })();
     });
 }

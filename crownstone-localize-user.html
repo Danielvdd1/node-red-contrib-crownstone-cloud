@@ -15,7 +15,6 @@
         },
         oneditprepare: function () {
             var node = this;
-            var sphereId = $('#node-input-sphereId').val();
 
             // Function to uptate the user list depenting on the selected sphere
             function updateUserList(sphereId) {
@@ -60,12 +59,6 @@
                 }
             });
 
-            // Generate user list at start when a shpere is selected
-            if ($('#node-input-sphereId').val()) {
-                let sphereId = $('#node-input-sphereId').val();
-                updateUserList(sphereId);
-            }
-
             // Generate user list when a sphere is selected
             $('#node-input-sphereName').on("change", function () {
                 let sphereId = $('#node-input-sphereName').val();
@@ -91,7 +84,7 @@
         <input type="text" id="node-input-sphereId">
     </div>
     <div class="form-row form-row-sphereName" id="input-sphereName">
-        <label for="node-input-sphereName"><i class="fa fa-user"></i> Sphere</label>
+        <label for="node-input-sphereName"><i class="fa fa-circle-o"></i> Sphere</label>
         <select type="text" id="node-input-sphereName" style="width: 250px;">
         </select>
     </div>
