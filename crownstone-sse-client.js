@@ -14,17 +14,16 @@ module.exports = function (RED) {
 
         // create a callback function to print incoming data
         let eventHandler = (data) => {
-            console.log("Event received", data);
+            // console.log("Event received", data); // Debug
+
+            var newMsg = {};
+            newMsg.payload = data; // Add the event data to the message object
 
             if (data.type === "system" && data.subType === "TOKEN_EXPIRED") {
                 // Token expired. Need to reauthenticate.
+                node.error("Authorization Required", newMsg); // Catchable error so a catch node can trigger the authentication node
             }
 
-            // type: "system",
-            // subType: "TOKEN_EXPIRED" | "NO_ACCESS_TOKEN"
-
-            var newMsg = {};
-            newMsg.payload = data;
             node.send(newMsg);
         }
 
@@ -38,20 +37,23 @@ module.exports = function (RED) {
                 return;
             }
 
-            let userInfo = cloud.me().rest.tokenStore.cloudUser; // When cloud is not defined, an error occurres. "Cannot read property 'me' of undefined"
-            let email = userInfo.email;
-            let passwordHash = userInfo.passwordSha1;
+            // Login the user after the access token is generated
+            var myInterval = setInterval(function () {
+                let at = cloud.me().rest.tokenStore.accessToken;
+                if (at !== undefined) { // Check if the token is set
+                    loginUser(at);
+                    return clearInterval(myInterval);
+                }
+            }, 500); // Interval
+            // TODO: infinite loop when the user is not authenticated
 
-            (async function () {
+            async function loginUser(accessToken) {
                 try {
-                    // we will login to the Crownstone cloud to obtain an accessToken.
-                    // It will be set automatically after successful login.
-                    await sse.loginHashed(email, passwordHash); // Replace this with the same access token as the other nodes?
-                    console.log(sse);
+                    // Set the access token from the cloud object
+                    sse.setAccessToken(accessToken);
 
                     // Start the eventstream
                     await sse.start(eventHandler);
-                    console.log(sse);
                     console.log("Event stream started");
                 }
                 catch (e) {
@@ -65,58 +67,35 @@ module.exports = function (RED) {
                         node.error("There was a problem connecting to the event server", newMsg);
                     }
                 }
-            })();
+            }
         });
 
 
         // Input event
         node.on('input', function (msg, send, done) {
+            // Is the SSE connection open?
+            let openConnection = (sse.eventSource !== undefined && sse.checkerInterval._destroyed === false);
+            // Get state from the message object
+            let newState = msg.state.toLowerCase();
+
             // Start or stop the SSE client
-            if (msg.state.toLowerCase() === "on" || msg.state.toLowerCase() === "start") {
+            if ((newState === "on" || newState === "start") && !openConnection) {
                 // Start the event listener
                 (async () => {
-                    await sse.start(eventHandler); // TODO: Check the current state of the SSE listener
-                    console.log(sse);
+                    await sse.start(eventHandler);
                     return;
                 })();
             }
-            if (msg.state.toLowerCase() === "off" || msg.state.toLowerCase() === "stop") {
+            if (newState === "off" || newState === "stop" && openConnection) {
                 // Stop the event listener
-                sse.stop(); // TODO: Check the current state of the SSE listener
-                console.log(sse);
+                sse.stop();
                 return;
-            }
-
-            // Debug
-            if (msg.state.toLowerCase() === "debug") { // TODO: Use something like this to check the current state of the SSE listener
-                if (sse.eventSource !== undefined){
-                    if (sse.checkerInterval._destroyed === true){
-                        // Closed
-                        console.log("Closed");
-                        node.log("Closed");
-                    }
-                    else{
-                        // Open
-                        console.log("Open");
-                        node.log("Open");
-                    }
-                }
-                else{
-                    // Close
-                    console.log("Close");
-                    node.log("Close");
-                }
             }
         });
 
         // Close event
         this.on('close', function (removed, done) {
-            if (removed) {
-                // This node has been disabled/deleted
-                sse.close();
-            } else {
-                // This node is being restarted
-            }
+            sse.stop();
             done();
         });
     }
