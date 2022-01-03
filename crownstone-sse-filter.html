@@ -5,6 +5,7 @@
         defaults: {
             name: { value: "" },
             eventType: { value: "0", required: true }, // 1:presence, 2:swith // TODO replace string numbers with words?
+            enterExit: { value: "" }, // "", "enter", "exit"
             sphereId1: { value: "" },
             locationId: { value: "" },
             userId: { value: "" },
@@ -19,7 +20,6 @@
         },
         oneditprepare: function () {
             var node = this;
-            //var sphereId = $('#node-input-sphereId').val();
 
             function showEventProperties(eventType) {
                 switch (eventType) {
@@ -52,10 +52,6 @@
             });
 
 
-
-
-            // TODO: Fill the lists with items.
-
             function updateSection1() {
 
                 function updateLocationList() {
@@ -71,7 +67,10 @@
                     });
                 }
 
-                function updateUserList(sphereId) { // TODO: Not possible when all spheres are selected
+                function updateUserList(sphereId) {
+                    if (sphereId === "") { // Request not possible when all spheres are selected
+                        return;
+                    }
                     $.getJSON('users/' + node.id + '/' + sphereId, function (data) {
                         // Generate drop-down list
                         $('#node-input-userName').empty();
@@ -94,7 +93,6 @@
 
                     if ($('#node-input-sphereId1').val()) {
                         let sphereId = $('#node-input-sphereId1').val();
-                        updateLocationList();
                         updateUserList(sphereId);
                     }
                 })/*.fail(function (jqXHR, textStatus, errorThrown) {
@@ -108,35 +106,27 @@
                     }
                 })*/;
 
-                // Generate user list at start when a sphere is selected
-                // if ($('#node-input-sphereId1').val()) {
-                //     let sphereId = $('#node-input-sphereId1').val();
-                //     updateLocationList();
-                //     updateUserList(sphereId);
-                // }
+                updateLocationList();
 
                 // Generate user list when a sphere is selected
                 $('#node-input-sphereName1').on("change", function () {
                     let sphereId = $('#node-input-sphereName1').val();
-                    updateLocationList();
                     updateUserList(sphereId);
                 });
             }
 
             function updateSection2() {
 
-                function updateCrownstoneList() {
-                    $.getJSON('crownstones/' + node.id, function (data) {
-                        // Generate drop-down list
-                        $('#node-input-crownstoneName').empty();
-                        $('#node-input-crownstoneName').append(`<option value="">All</option>`);
-                        for (let crownstone of data) {
-                            $('#node-input-crownstoneName').append(`<option value="${crownstone.id}" title="${crownstone.location}">${crownstone.name}</option>`);
-                        }
-                        // Highlight selected item
-                        $('#node-input-crownstoneName').val($('#node-input-crownstoneId').val());
-                    });
-                }
+                $.getJSON('crownstones/' + node.id, function (data) {
+                    // Generate drop-down list
+                    $('#node-input-crownstoneName').empty();
+                    $('#node-input-crownstoneName').append(`<option value="">All</option>`);
+                    for (let crownstone of data) {
+                        $('#node-input-crownstoneName').append(`<option value="${crownstone.id}" title="${crownstone.location}">${crownstone.name}</option>`);
+                    }
+                    // Highlight selected item
+                    $('#node-input-crownstoneName').val($('#node-input-crownstoneId').val());
+                });
 
                 $.getJSON('spheres/' + node.id, function (data) {
                     // Generate drop-down list
@@ -146,10 +136,6 @@
                     // Highlight selected item
                     $('#node-input-sphereName2').val($('#node-input-sphereId2').val());
 
-                    if ($('#node-input-sphereId2').val()) {
-                        let sphereId = $('#node-input-sphereId2').val();
-                        updateCrownstoneList(); // TODO: Seperate this with the sphere selection
-                    }
                 })/*.fail(function (jqXHR, textStatus, errorThrown) {
                     if (jqXHR.status === 400) {
                         // Show the tip to Deploy the code
@@ -161,16 +147,12 @@
                     }
                 })*/;
 
-                // Generate user list at start when a sphere is selected
-                // if ($('#node-input-sphereId2').val()) {
-                //     let sphereId = $('#node-input-sphereId2').val();
-                //     updateCrownstoneList(); // TODO: Separate this with the sphere selection
-                // }
+                updateCrownstoneList();
 
                 // Generate user list when a sphere is selected
                 $('#node-input-sphereName2').on("change", function () {
                     let sphereId = $('#node-input-sphereName2').val();
-                    updateCrownstoneList(); // TODO: Seperate this with the sphere selection
+                    updateCrownstoneList();
                 });
             }
 
@@ -209,6 +191,15 @@
     </div>
 
     <div id="section-1" hidden>
+        <div class="form-row form-row-enterExit" id="input-enterExit">
+            <label for="node-input-enterExit"><i class="fa fa-sign-out"></i> Enter/Exit</label>
+            <select type="text" id="node-input-enterExit" style="width: 250px;">
+                <option value="">Enter or exit</option>
+                <option value="enter">Enter</option>
+                <option value="exit">Exit</option>
+            </select>
+        </div>
+
         <div class="form-row form-row-sphereId1" id="input-sphereId1" hidden>
             <input type="text" id="node-input-sphereId1">
         </div>

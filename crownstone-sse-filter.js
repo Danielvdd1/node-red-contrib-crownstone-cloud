@@ -5,6 +5,7 @@ module.exports = function (RED) {
 
         // Input field values
         var eventType = config.eventType; // 1:presence, 2:swith
+        var enterExit = config.enterExit; // "enter", "exit", other
         var sphereId1 = config.sphereId1;
         var locationId = config.locationId;
         var userId = config.userId;
@@ -16,14 +17,20 @@ module.exports = function (RED) {
         var cloud;
 
         // Wait one tick of the event loop in case the authenticate node runs later and did not yet store the cloud in global context
-        setImmediate(() => { cloud = globalContext.get("crownstoneCloud"); });
+        setImmediate(() => {
+            cloud = globalContext.get("crownstoneCloud");
+            if (cloud === undefined) { // Cloud object is not stored in global context. The authentication node is not used.
+                node.error("The cloud object is not stored in global context. Use the Crownstone authenticate node.");
+                return;
+            }
+        });
 
 
         // Input event
         node.on('input', function (msg, send, done) {
             let event = msg.payload;
 
-            // TODO: Check if the payload contains an event
+            // Check if the payload contains an event
             if (event.type === undefined) {
                 return;
             }
@@ -34,6 +41,9 @@ module.exports = function (RED) {
                         break;
                     }
                     if (event.subType === "enterLocation" || event.subType === "exitLocation") {
+                        if ((enterExit === "enter" && event.subType === "exitLocation") || (enterExit === "exit" && event.subType === "enterLocation")) {
+                            break;
+                        }
                         if (sphereId1 !== "" && event.sphere.id !== sphereId1) {
                             break;
                         }
@@ -46,6 +56,9 @@ module.exports = function (RED) {
                         node.send(msg);
                     }
                     else if (event.subType === "enterSphere" || event.subType === "exitSphere") {
+                        if ((enterExit === "enter" && event.subType === "exitSphere") || (enterExit === "exit" && event.subType === "enterSphere")) {
+                            break;
+                        }
                         if (sphereId1 !== "" && event.sphere.id !== sphereId1) {
                             break;
                         }
@@ -71,7 +84,6 @@ module.exports = function (RED) {
                         if (sphereId2 !== "" && event.sphere.id !== sphereId2) {
                             break;
                         }
-                        console.log("Debug: s3");
                         if (crownstoneId !== "" && event.crownstone.id !== crownstoneId) {
                             break;
                         }
