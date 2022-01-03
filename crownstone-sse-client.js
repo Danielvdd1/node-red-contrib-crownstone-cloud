@@ -21,7 +21,7 @@ module.exports = function (RED) {
 
             if (data.type === "system" && data.subType === "TOKEN_EXPIRED") {
                 // Token expired. Need to reauthenticate.
-                node.error("Authorization Required", newMsg); // Catchable error so a catch node can trigger the authentication node
+                node.error("Authorization Required", newMsg); // Catchable error so a catch node can catch it and trigger the authentication node
             }
 
             node.send(newMsg);
@@ -30,28 +30,25 @@ module.exports = function (RED) {
         // Wait one tick of the event loop in case the authenticate node runs later and did not yet store the cloud in global context
         setImmediate(() => {
             cloud = globalContext.get("crownstoneCloud");
-            if (cloud === undefined) { // Cloud object is not stored in global context // TODO: Check if there is a better way and compare it to the other nodes that do not have this check.
-                console.log("Debug");
-                var newMsg = {};
-                node.error("Cloud object is not stored in global context", newMsg); // Authorization Required ?
+            if (cloud === undefined) { // Cloud object is not stored in global context. The authentication node is not used.
+                node.error("The cloud object is not stored in global context. Use the Crownstone authenticate node.");
                 return;
             }
 
             // Login the user after the access token is generated
             var myInterval = setInterval(function () {
-                let at = cloud.me().rest.tokenStore.accessToken;
-                if (at !== undefined) { // Check if the token is set
-                    loginUser(at);
+                let accessToken = cloud.me().rest.tokenStore.accessToken;
+                if (accessToken !== undefined) { // Check if the token is set
+                    // Set the access token from the cloud object
+                    sse.setAccessToken(accessToken);
+                    StartEventHandler();
                     return clearInterval(myInterval);
                 }
             }, 500); // Interval
             // TODO: infinite loop when the user is not authenticated
 
-            async function loginUser(accessToken) {
+            async function StartEventHandler() {
                 try {
-                    // Set the access token from the cloud object
-                    sse.setAccessToken(accessToken);
-
                     // Start the eventstream
                     await sse.start(eventHandler);
                     console.log("Event stream started");
@@ -81,14 +78,20 @@ module.exports = function (RED) {
             // Start or stop the SSE client
             if ((newState === "on" || newState === "start") && !openConnection) {
                 // Start the event listener
+                if(sse.accessToken === null || sse.accessToken === undefined){
+                    // TODO: Add warning?
+                    return;
+                }
                 (async () => {
                     await sse.start(eventHandler);
+                    console.log("Event stream started");
                     return;
                 })();
             }
             if (newState === "off" || newState === "stop" && openConnection) {
                 // Stop the event listener
                 sse.stop();
+                console.log("Event stream stopped");
                 return;
             }
         });
