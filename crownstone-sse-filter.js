@@ -30,6 +30,11 @@ module.exports = function (RED) {
         node.on('input', function (msg, send, done) {
             let event = msg.payload;
 
+            // Check if the message object contains has a payload
+            if (event === undefined) {
+                return;
+            }
+
             // Check if the payload contains an event
             if (event.type === undefined) {
                 return;
