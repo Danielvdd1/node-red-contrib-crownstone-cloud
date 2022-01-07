@@ -4,7 +4,7 @@ module.exports = function (RED) {
         var node = this;
 
         // Input field values
-        var eventType = config.eventType; // 1:presence, 2:swith
+        var eventType = config.eventType; // "presence", "swith", other
         var enterExit = config.enterExit; // "enter", "exit", other
         var sphereId1 = config.sphereId1;
         var locationId = config.locationId;
@@ -41,7 +41,7 @@ module.exports = function (RED) {
             }
 
             switch (eventType) {
-                case "1": // Presence event
+                case "presence": // Presence event
                     if (event.type !== "presence") {
                         break;
                     }
@@ -74,7 +74,7 @@ module.exports = function (RED) {
                     }
                     break;
 
-                case "2": // Switch event
+                case "switch": // Switch event
                     if (event.type === "command" || event.subType === "multiSwitch") {
                         if (sphereId2 !== "" && event.sphere.id !== sphereId2) {
                             break;

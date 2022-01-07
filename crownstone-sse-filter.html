@@ -4,7 +4,7 @@
         color: '#FFFFFF',
         defaults: {
             name: { value: "" },
-            eventType: { value: "0", required: true }, // 1:presence, 2:swith // TODO replace string numbers with words?
+            eventType: { value: "" }, // "", "presence", "switch"
             enterExit: { value: "" }, // "", "enter", "exit"
             sphereId1: { value: "" },
             locationId: { value: "" },
@@ -16,26 +16,27 @@
         outputs: 1,
         icon: "icons/crownstone_logo_black.svg",
         label: function () {
-            return this.name || "Crownstone SSE filter"; // TODO: change name based on the event type
+            //return this.name || (this.eventType === "" ? "Crownstone SSE filter" : "Crownstone SSE filter: " + this.eventType + " events");
+            return this.name || (this.eventType === "" ? "Crownstone SSE filter" : "Crownstone SSE filter (" + this.eventType + ")");
         },
         oneditprepare: function () {
             var node = this;
 
             function showEventProperties(eventType) {
                 switch (eventType) {
-                    case "1":
-                        $("#section-1").show();
-                        $("#section-2").hide();
+                    case "presence":
+                        $("#section-presence").show();
+                        $("#section-switch").hide();
                         break;
 
-                    case "2":
-                        $("#section-1").hide();
-                        $("#section-2").show();
+                    case "swith":
+                        $("#section-presence").hide();
+                        $("#section-switch").show();
                         break;
 
                     default:
-                        $("#section-1").hide();
-                        $("#section-2").hide();
+                        $("#section-presence").hide();
+                        $("#section-switch").hide();
                         break;
                 }
             }
@@ -52,20 +53,18 @@
             });
 
 
-            function updateSection1() {
+            function updateSectionPresence() {
 
-                function updateLocationList() {
-                    $.getJSON('locations/' + node.id, function (data) {
-                        // Generate drop-down list
-                        $('#node-input-locationName').empty();
-                        $('#node-input-locationName').append(`<option value="">All</option>`);
-                        for (let location of data) {
-                            $('#node-input-locationName').append(`<option value="${location.id}" title="${location.sphereName}">${location.name}</option>`);
-                        }
-                        // Highlight selected item
-                        $('#node-input-locationName').val($('#node-input-locationId').val());
-                    });
-                }
+                $.getJSON('locations/' + node.id, function (data) {
+                    // Generate drop-down list
+                    $('#node-input-locationName').empty();
+                    $('#node-input-locationName').append(`<option value="">All</option>`);
+                    for (let location of data) {
+                        $('#node-input-locationName').append(`<option value="${location.id}" title="${location.sphereName}">${location.name}</option>`);
+                    }
+                    // Highlight selected item
+                    $('#node-input-locationName').val($('#node-input-locationId').val());
+                });
 
                 function updateUserList(sphereId) {
                     if (sphereId === "") { // Request not possible when all spheres are selected
@@ -106,8 +105,6 @@
                     }
                 });
 
-                updateLocationList();
-
                 // Generate user list when a sphere is selected
                 $('#node-input-sphereName1').on("change", function () {
                     let sphereId = $('#node-input-sphereName1').val();
@@ -115,7 +112,7 @@
                 });
             }
 
-            function updateSection2() {
+            function updateSectionSwitch() {
 
                 $.getJSON('crownstones/' + node.id, function (data) {
                     // Generate drop-down list
@@ -146,18 +143,10 @@
                         $('#tip-authenticate').show();
                     }
                 });
-
-                updateCrownstoneList();
-
-                // Generate user list when a sphere is selected
-                $('#node-input-sphereName2').on("change", function () {
-                    let sphereId = $('#node-input-sphereName2').val();
-                    updateCrownstoneList();
-                });
             }
 
-            updateSection1();
-            updateSection2();
+            updateSectionPresence();
+            updateSectionSwitch();
         },
         oneditsave: function () {
             // Put the chosen sphere in the hidden field
@@ -184,13 +173,13 @@
     <div class="form-row form-row-eventType" id="input-eventType">
         <label for="node-input-eventType"><i class="fa fa-bell"></i> Event type</label>
         <select type="text" id="node-input-eventType" style="width: 250px;">
-            <option value="0">Select event type</option>
-            <option value="1">Presence event</option>
-            <option value="2">Switch event</option>
+            <option value="">Select event type</option>
+            <option value="presence">Presence event</option>
+            <option value="switch">Switch event</option>
         </select>
     </div>
 
-    <div id="section-1" hidden>
+    <div id="section-presence" hidden>
         <div class="form-row form-row-enterExit" id="input-enterExit">
             <label for="node-input-enterExit"><i class="fa fa-sign-out"></i> Enter/Exit</label>
             <select type="text" id="node-input-enterExit" style="width: 250px;">
@@ -232,7 +221,7 @@
         <div class="form-tips"><b>Tip:</b> Before selecting a user, a sphere needs to be selected.</div>
     </div>
 
-    <div id="section-2" hidden>
+    <div id="section-switch" hidden>
         <div class="form-row form-row-sphereId2" id="input-sphereId2" hidden>
             <input type="text" id="node-input-sphereId2">
         </div>
