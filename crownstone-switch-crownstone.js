@@ -13,7 +13,13 @@ module.exports = function (RED) {
         var cloud;
 
         // Wait one tick of the event loop in case the authenticate node runs later and did not yet store the cloud in global context
-        setImmediate(() => { cloud = globalContext.get("crownstoneCloud"); });
+        setImmediate(() => {
+            cloud = globalContext.get("crownstoneCloud");
+            if (cloud === undefined) { // Cloud object is not stored in global context. The authentication node is not used.
+                node.error("The cloud object is not stored in global context. Use the Crownstone authenticate node.");
+                return;
+            }
+        });
 
 
         // Input event
