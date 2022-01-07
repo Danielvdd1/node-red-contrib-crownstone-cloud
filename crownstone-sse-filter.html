@@ -95,7 +95,7 @@
                         let sphereId = $('#node-input-sphereId1').val();
                         updateUserList(sphereId);
                     }
-                })/*.fail(function (jqXHR, textStatus, errorThrown) {
+                }).fail(function (jqXHR, textStatus, errorThrown) {
                     if (jqXHR.status === 400) {
                         // Show the tip to Deploy the code
                         $('#tip-deploy').show();
@@ -104,7 +104,7 @@
                         // Show the tip to add the Crownstone authenticate node
                         $('#tip-authenticate').show();
                     }
-                })*/;
+                });
 
                 updateLocationList();
 
@@ -136,7 +136,7 @@
                     // Highlight selected item
                     $('#node-input-sphereName2').val($('#node-input-sphereId2').val());
 
-                })/*.fail(function (jqXHR, textStatus, errorThrown) {
+                }).fail(function (jqXHR, textStatus, errorThrown) {
                     if (jqXHR.status === 400) {
                         // Show the tip to Deploy the code
                         $('#tip-deploy').show();
@@ -145,7 +145,7 @@
                         // Show the tip to add the Crownstone authenticate node
                         $('#tip-authenticate').show();
                     }
-                })*/;
+                });
 
                 updateCrownstoneList();
 
@@ -229,6 +229,7 @@
                 <option value="">All</option>
             </select>
         </div>
+        <div class="form-tips"><b>Tip:</b> Before selecting a user, a sphere needs to be selected.</div>
     </div>
 
     <div id="section-2" hidden>
@@ -254,8 +255,8 @@
     </div>
 
 
-    <!-- <div class="form-tips" id="tip-authenticate" hidden><b>Tip:</b> Add the Crowsntone authenticate node to the flow to authenticate the user and make use of this node.</div>
-    <div class="form-tips" id="tip-deploy" hidden><b>Tip:</b> Deploy the flow first before the list can be created.</div> -->
+    <div class="form-tips" id="tip-authenticate" hidden><b>Tip:</b> Add the Crowsntone authenticate node to the flow to authenticate the user and make use of this node.</div>
+    <div class="form-tips" id="tip-deploy" hidden><b>Tip:</b> Deploy the flow first before the list can be created.</div>
 </script>
 
 <script type="text/html" data-help-name="crownstone sse filter">
