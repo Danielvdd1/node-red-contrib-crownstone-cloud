@@ -20,11 +20,52 @@
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
 
-    <!-- <div class="form-tips" id="tip-authenticate" hidden><b>Tip:</b> Add the Crowsntone authenticate node to the flow to authenticate the user and make use of this node.</div> -->
+    <!-- <div class="form-tips" id="tip-authenticate" hidden><b>Tip:</b> Add the Crownstone authenticate node to the flow to authenticate the user and make use of this node.</div> -->
 </script>
 
 <script type="text/html" data-help-name="crownstone sse client">
     <p>Receives events from the cloud using Server Sent Events.</p>
 
-    <p>TODO: Add instructions</p>
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt class="optional">state<span class="property-type">string</span></dt>
+        <dd>Start or stop the SSE client. set state to "start" or "stop".</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <ol class="node-ports">
+        <li>Standard output
+            <dl class="message-properties">
+                <dt>payload<span class="property-type">object</span></dt>
+                <dd>An object containing event information.</dd>
+            </dl>
+        </li>
+        <li>Authorization required error
+            <dl class="message-properties">
+                <dt>payload<span class="property-type">object</span></dt>
+                <dd>The standard error of the command.</dd>
+            </dl>
+        </li>
+        <li>Standard error
+            <dl class="message-properties">
+                <dt>payload<span class="property-type">object</span></dt>
+                <dd>The standard error of the command.</dd>
+            </dl>
+        </li>
+    </ol>
+
+    <h3>Details</h3>
+    <p>This node can be used to get events from the server.</p>
+    <p>The technology that is used is called Server-Sent Events. A event stream is created with the Crownstone Event server. The server will sent events to the client with changes in the cloud.</p>
+    <p>This node returns an object with the event information in <code>msg.payload</code>.</p>
+    <p>The event listener can be started and stopped with <code>msg.state</code>. Set this field to "start" or "stop".</p>
+    <p>This node is dependent on the Crownstone authenticate node.
+        Import the Crownstone authenticate node in the project to make use of the features of this node.
+    </p>
+
+    <h3>References</h3>
+    <ul>
+        <li><a href="https:crownstone.rocks/">Crownstone</a> - Crownstone website</li>
+        <li><a href="https://github.com/Danielvdd1/node-red-contrib-crownstone-rest-api/">GitHub</a> - the nodes github repository</li>
+    </ul>
 </script>

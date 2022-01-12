@@ -244,12 +244,44 @@
     </div>
 
 
-    <div class="form-tips" id="tip-authenticate" hidden><b>Tip:</b> Add the Crowsntone authenticate node to the flow to authenticate the user and make use of this node.</div>
-    <div class="form-tips" id="tip-deploy" hidden><b>Tip:</b> Deploy the flow first before the list can be created.</div>
+    <div class="form-tips" id="tip-authenticate" hidden><b>Tip:</b> Add the Crownstone authenticate node to the flow to authenticate the user and make use of this node.</div>
+    <div class="form-tips" id="tip-deploy" hidden><b>Tip:</b> Deploy the flow first before the lists can be created.</div>
 </script>
 
 <script type="text/html" data-help-name="crownstone sse filter">
     <p>Filters events from the Crownstone SSE client node.</p>
 
-    TODO: Add instructions
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt class="optional">payload<span class="property-type">object</span></dt>
+        <dd>The event information.</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <ol class="node-ports">
+        <li>Standard output
+            <dl class="message-properties">
+                <dt>payload<span class="property-type">object</span></dt>
+                <dd>An object containing event information from the Crownstone SSE client node.</dd>
+            </dl>
+        </li>
+    </ol>
+
+    <h3>Details</h3>
+    <p>This node can be used to filter events that are given by the Crownstone SSE client node.
+        This means that the next node is only triggered when the event meets the configured conditions.
+    </p>
+    <p>The type of event can be configured with the properties menu.
+        Every type has more sub items to filter.
+    </p>
+    <p>When the received event matches the filter information, the object with all event information is sent with <code>msg.payload</code>.</p>
+    <p>This node is dependent on the Crownstone authenticate node.
+        Import the Crownstone authenticate node in the project to make use of the features of this node.
+    </p>
+
+    <h3>References</h3>
+    <ul>
+        <li><a href="https:crownstone.rocks/">Crownstone</a> - Crownstone website</li>
+        <li><a href="https://github.com/Danielvdd1/node-red-contrib-crownstone-rest-api/">GitHub</a> - The nodes GitHub repository</li>
+    </ul>
 </script>
