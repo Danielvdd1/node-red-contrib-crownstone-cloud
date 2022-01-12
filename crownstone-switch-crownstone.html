@@ -14,6 +14,9 @@
         label: function () {
             return this.name || "Crownstone switch Crownstone";
         },
+        labelStyle: function () {
+            return this.name ? "node_label_italic" : "";
+        },
         oneditprepare: function () {
             var node = this;
             var requestData;
@@ -97,7 +100,7 @@
         <input type="text" id="node-input-dimPercentage" placeholder="%">
     </div>
 
-    <div class="form-tips" id="tip-authenticate" hidden><b>Tip:</b> Add the Crowsntone authenticate node to the flow to authenticate the user and make use of this node.</div>
+    <div class="form-tips" id="tip-authenticate" hidden><b>Tip:</b> Add the Crownstone authenticate node to the flow to authenticate the user and make use of this node.</div>
     <div class="form-tips" id="tip-deploy" hidden><b>Tip:</b> Deploy the flow first before the list can be created.</div>
 </script>
 
@@ -140,7 +143,7 @@
         To change the Crownstone on the go, the id of the Crownstone can be set with <code>msg.crownstoneId</code>.
         If the Crownstone is not dimmable, set the new state with <code>msg.onOff</code>.
         If the Crownstone is dimmable, set the percentage with <code>msg.dimPercentage</code>.
-        These two properties can be used interchanged without problem.
+        These two properties can be used interchanged without problem. If the suposed message property is not present, The other message property will be used as value.
     </p>
     <p>This node is dependent on the Crownstone authenticate node.
         Import the Crownstone authenticate node in the project to make use of the features of this node.
@@ -149,6 +152,6 @@
     <h3>References</h3>
     <ul>
         <li><a href="https:crownstone.rocks/">Crownstone</a> - Crownstone website</li>
-        <li><a href="https://github.com/Danielvdd1/node-red-contrib-crownstone-rest-api/">GitHub</a> - the nodes github repository</li>
+        <li><a href="https://github.com/Danielvdd1/node-red-contrib-crownstone-rest-api/">GitHub</a> - The nodes GitHub repository</li>
     </ul>
 </script>
