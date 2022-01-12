@@ -28,8 +28,10 @@
 
     <h3>Inputs</h3>
     <dl class="message-properties">
-        <dt class="optional">state<span class="property-type">string</span></dt>
-        <dd>Start or stop the SSE client. set state to "start" or "stop".</dd>
+        <dt class="optional">start<span class="property-type">bool</span></dt>
+        <dd>Start the SSE client. Set start to <code>true</code>.</dd>
+        <dt class="optional">stop<span class="property-type">bool</span></dt>
+        <dd>Stop the SSE client. Set stop to <code>true</code>.</dd>
     </dl>
 
     <h3>Outputs</h3>
@@ -58,7 +60,7 @@
     <p>This node can be used to get events from the server.</p>
     <p>The technology that is used is called Server-Sent Events. A event stream is created with the Crownstone Event server. The server will sent events to the client with changes in the cloud.</p>
     <p>This node returns an object with the event information in <code>msg.payload</code>.</p>
-    <p>The event listener can be started and stopped with <code>msg.state</code>. Set this field to "start" or "stop".</p>
+    <p>The event listener can be started and stopped with <code>msg.start</code> and <code>msg.stop</code>. Set this field to <code>true</code>.</p>
     <p>This node is dependent on the Crownstone authenticate node.
         Import the Crownstone authenticate node in the project to make use of the features of this node.
     </p>
@@ -66,6 +68,6 @@
     <h3>References</h3>
     <ul>
         <li><a href="https:crownstone.rocks/">Crownstone</a> - Crownstone website</li>
-        <li><a href="https://github.com/Danielvdd1/node-red-contrib-crownstone-rest-api/">GitHub</a> - the nodes github repository</li>
+        <li><a href="https://github.com/Danielvdd1/node-red-contrib-crownstone-rest-api/">GitHub</a> - The nodes GitHub repository</li>
     </ul>
 </script>

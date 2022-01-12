@@ -22,9 +22,30 @@ module.exports = function (RED) {
             if (data.type === "system" && data.subType === "TOKEN_EXPIRED") {
                 // Token expired. Need to reauthenticate.
                 node.error("Authorization Required", newMsg); // Catchable error so a catch node can catch it and trigger the authentication node
+                sse.stop();
             }
 
             node.send(newMsg);
+        }
+
+        async function StartEventHandler() {
+            console.log("Debug SSE access token: " + sse.accessToken);
+            try {
+                // Start the eventstream
+                await sse.start(eventHandler);
+                console.log("Event stream started");
+            }
+            catch (e) {
+                var newMsg = {};
+                if (e.statusCode === 401) {
+                    newMsg.payload = e;
+                    node.error("Authorization Required", newMsg);
+                }
+                else {
+                    newMsg.payload = e;
+                    node.error("There was a problem connecting to the event server", newMsg);
+                }
+            }
         }
 
         // Wait one tick of the event loop in case the authenticate node runs later and did not yet store the cloud in global context
@@ -46,25 +67,6 @@ module.exports = function (RED) {
                 }
             }, 500); // Interval
             // TODO: infinite loop when the user is not authenticated
-
-            async function StartEventHandler() {
-                try {
-                    // Start the eventstream
-                    await sse.start(eventHandler);
-                    console.log("Event stream started");
-                }
-                catch (e) {
-                    var newMsg = {};
-                    if (e.statusCode === 401) {
-                        newMsg.payload = e;
-                        node.error("Authorization Required", newMsg);
-                    }
-                    else {
-                        newMsg.payload = e;
-                        node.error("There was a problem connecting to the event server", newMsg);
-                    }
-                }
-            }
         });
 
 
@@ -72,24 +74,40 @@ module.exports = function (RED) {
         node.on('input', function (msg, send, done) {
             // Is the SSE connection open?
             let openConnection = (sse.eventSource !== undefined && sse.checkerInterval._destroyed === false);
-            // Get state from the message object
-            let newState = msg.state.toLowerCase();
 
-            // Start or stop the SSE client
-            if ((newState === "on" || newState === "start") && !openConnection) {
-                // Start the event listener
-                if(sse.accessToken === null || sse.accessToken === undefined){
-                    // TODO: Add warning?
+            // Start or stop the event handler
+            if (msg.start) {
+                let accessToken = cloud.me().rest.tokenStore.accessToken;
+                // Start the SSE client when the stream is closed
+                if (!openConnection) {
+                    if (sse.accessToken === null || sse.accessToken === undefined) {
+                        // TODO: Add warning?
+                        return;
+                    }
+                    if (sse.accessToken !== accessToken) { // Check if the token is changed
+                        // Set the access token from the cloud object
+                        sse.setAccessToken(accessToken);
+                    }
+                    // Start the event handler
+                    StartEventHandler();
                     return;
                 }
-                (async () => {
-                    await sse.start(eventHandler);
-                    console.log("Event stream started");
+                // Start the SSE client again when the stream is open (Could mean the user re-authenticated)
+                if (openConnection) {
+                    if (sse.accessToken === accessToken) { // Check if the token is changed
+                        return;
+                    }
+                    sse.stop();
+                    // Set the access token from the cloud object
+                    sse.setAccessToken(accessToken);
+                    // Start the event handler
+                    StartEventHandler();
                     return;
-                })();
+                }
             }
-            if (newState === "off" || newState === "stop" && openConnection) {
-                // Stop the event listener
+            // Stop the SSE client when the stream is open
+            if (msg.stop && openConnection) {
+                // Stop the event handler
                 sse.stop();
                 console.log("Event stream stopped");
                 return;

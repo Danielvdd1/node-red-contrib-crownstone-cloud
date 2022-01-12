@@ -19,6 +19,8 @@ module.exports = function (RED) {
         function loginUser(msg) {
             (async () => {
                 await cloud.loginHashed(email, cloud.hashPassword(password));
+                var newMsg = { "start": true };
+                node.send(newMsg);
             })().catch((e) => {
                 msg.payload = e;
                 node.error("There was a problem authenticating the user", msg);
@@ -38,8 +40,6 @@ module.exports = function (RED) {
         node.on('input', function (msg, send, done) {
             // Authenticate when the node is triggered
             loginUser(msg);
-
-            done();
         });
     }
     RED.nodes.registerType("crownstone authenticate", CrownstoneAuthenticatetNode, {
