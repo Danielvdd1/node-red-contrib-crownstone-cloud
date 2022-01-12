@@ -1,11 +1,11 @@
 {
-  "name": "node-red-contrib-crownstone-rest-api",
+  "name": "node-red-contrib-crownstone-cloud",
   "version": "1.0.0",
-  "description": "Crownstone REST API",
+  "description": "Crownstone REST API and SSE",
   "homepage": "https://crownstone.rocks/integrations/node-red",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Danielvdd1/node-red-contrib-crownstone-rest-api"
+    "url": "https://github.com/Danielvdd1/node-red-contrib-crownstone-cloud"
   },
   "scripts": {
     "test": "mocha \"test/**/*_spec.js\""

@@ -11,7 +11,7 @@ Visit our [website](http://crownstone.rocks) for more information about our prod
 To install, either use the manage palette option in the editor, or run the following command in your Node-RED user directory - typically `~/.node-red`
 
         cd ~/.node-red
-        npm install node-red-contrib-crownstone-rest-api
+        npm install node-red-contrib-crownstone-cloud
 
 
 ## Usage
