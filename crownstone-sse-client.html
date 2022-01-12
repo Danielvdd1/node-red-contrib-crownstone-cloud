@@ -1,0 +1,73 @@
+<script type="text/javascript">
+    RED.nodes.registerType('crownstone sse client', {
+        category: 'Crownstone',
+        color: '#FFFFFF',
+        defaults: {
+            name: { value: "" }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "icons/crownstone_logo_black.svg",
+        label: function () {
+            return this.name || "Crownstone SSE client";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="crownstone sse client">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+
+    <!-- <div class="form-tips" id="tip-authenticate" hidden><b>Tip:</b> Add the Crownstone authenticate node to the flow to authenticate the user and make use of this node.</div> -->
+</script>
+
+<script type="text/html" data-help-name="crownstone sse client">
+    <p>Receives events from the cloud using Server Sent Events.</p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt class="optional">start<span class="property-type">bool</span></dt>
+        <dd>Start the SSE client. Set start to <code>true</code>.</dd>
+        <dt class="optional">stop<span class="property-type">bool</span></dt>
+        <dd>Stop the SSE client. Set stop to <code>true</code>.</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <ol class="node-ports">
+        <li>Standard output
+            <dl class="message-properties">
+                <dt>payload<span class="property-type">object</span></dt>
+                <dd>An object containing event information.</dd>
+            </dl>
+        </li>
+        <li>Authorization required error
+            <dl class="message-properties">
+                <dt>payload<span class="property-type">object</span></dt>
+                <dd>The standard error of the command.</dd>
+            </dl>
+        </li>
+        <li>Standard error
+            <dl class="message-properties">
+                <dt>payload<span class="property-type">object</span></dt>
+                <dd>The standard error of the command.</dd>
+            </dl>
+        </li>
+    </ol>
+
+    <h3>Details</h3>
+    <p>This node can be used to get events from the server.</p>
+    <p>The technology that is used is called Server-Sent Events. A event stream is created with the Crownstone Event server. The server will sent events to the client with changes in the cloud.</p>
+    <p>This node returns an object with the event information in <code>msg.payload</code>.</p>
+    <p>The event listener can be started and stopped with <code>msg.start</code> and <code>msg.stop</code>. Set this field to <code>true</code>.</p>
+    <p>This node is dependent on the Crownstone authenticate node.
+        Import the Crownstone authenticate node in the project to make use of the features of this node.
+    </p>
+
+    <h3>References</h3>
+    <ul>
+        <li><a href="https:crownstone.rocks/">Crownstone</a> - Crownstone website</li>
+        <li><a href="https://github.com/Danielvdd1/node-red-contrib-crownstone-rest-api/">GitHub</a> - The nodes GitHub repository</li>
+    </ul>
+</script>

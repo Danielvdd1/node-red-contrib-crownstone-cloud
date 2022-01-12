@@ -1,0 +1,287 @@
+<script type="text/javascript">
+    RED.nodes.registerType('crownstone sse filter', {
+        category: 'Crownstone',
+        color: '#FFFFFF',
+        defaults: {
+            name: { value: "" },
+            eventType: { value: "" }, // "", "presence", "switch"
+            enterExit: { value: "" }, // "", "enter", "exit"
+            sphereId1: { value: "" },
+            locationId: { value: "" },
+            userId: { value: "" },
+            sphereId2: { value: "" },
+            crownstoneId: { value: "" }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "icons/crownstone_logo_black.svg",
+        label: function () {
+            //return this.name || (this.eventType === "" ? "Crownstone SSE filter" : "Crownstone SSE filter: " + this.eventType + " events");
+            return this.name || (this.eventType === "" ? "Crownstone SSE filter" : "Crownstone SSE filter (" + this.eventType + ")");
+        },
+        oneditprepare: function () {
+            var node = this;
+
+            function showEventProperties(eventType) {
+                switch (eventType) {
+                    case "presence":
+                        $("#section-presence").show();
+                        $("#section-switch").hide();
+                        break;
+
+                    case "swith":
+                        $("#section-presence").hide();
+                        $("#section-switch").show();
+                        break;
+
+                    default:
+                        $("#section-presence").hide();
+                        $("#section-switch").hide();
+                        break;
+                }
+            }
+
+            // Show the event properties of the selected event type
+            if ($('#node-input-eventType').val()) {
+                let eventType = $('#node-input-eventType').val();
+                showEventProperties(eventType);
+            }
+            // Show the event properties of the event type when the type is selected
+            $('#node-input-eventType').on("change", function () {
+                let eventType = $('#node-input-eventType').val();
+                showEventProperties(eventType);
+            });
+
+
+            function updateSectionPresence() {
+
+                $.getJSON('locations/' + node.id, function (data) {
+                    // Generate drop-down list
+                    $('#node-input-locationName').empty();
+                    $('#node-input-locationName').append(`<option value="">All</option>`);
+                    for (let location of data) {
+                        $('#node-input-locationName').append(`<option value="${location.id}" title="${location.sphereName}">${location.name}</option>`);
+                    }
+                    // Highlight selected item
+                    $('#node-input-locationName').val($('#node-input-locationId').val());
+                });
+
+                function updateUserList(sphereId) {
+                    if (sphereId === "") { // Request not possible when all spheres are selected
+                        return;
+                    }
+                    $.getJSON('users/' + node.id + '/' + sphereId, function (data) {
+                        // Generate drop-down list
+                        $('#node-input-userName').empty();
+                        $('#node-input-userName').append(`<option value="">All</option>`);
+                        for (let user of data) {
+                            $('#node-input-userName').append(`<option value="${user.id}" title="${user.firstName} ${user.lastName}">${user.firstName}</option>`);
+                        }
+                        // Highlight selected item
+                        $('#node-input-userName').val($('#node-input-userId').val());
+                    });
+                }
+
+                $.getJSON('spheres/' + node.id, function (data) {
+                    // Generate drop-down list
+                    for (let sphere of data) {
+                        $('#node-input-sphereName1').append(`<option value="${sphere.id}">${sphere.name}</option>`);
+                    }
+                    // Highlight selected item
+                    $('#node-input-sphereName1').val($('#node-input-sphereId1').val());
+
+                    if ($('#node-input-sphereId1').val()) {
+                        let sphereId = $('#node-input-sphereId1').val();
+                        updateUserList(sphereId);
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.status === 400) {
+                        // Show the tip to Deploy the code
+                        $('#tip-deploy').show();
+                    }
+                    else if (jqXHR.status === 401) {
+                        // Show the tip to add the Crownstone authenticate node
+                        $('#tip-authenticate').show();
+                    }
+                });
+
+                // Generate user list when a sphere is selected
+                $('#node-input-sphereName1').on("change", function () {
+                    let sphereId = $('#node-input-sphereName1').val();
+                    updateUserList(sphereId);
+                });
+            }
+
+            function updateSectionSwitch() {
+
+                $.getJSON('crownstones/' + node.id, function (data) {
+                    // Generate drop-down list
+                    $('#node-input-crownstoneName').empty();
+                    $('#node-input-crownstoneName').append(`<option value="">All</option>`);
+                    for (let crownstone of data) {
+                        $('#node-input-crownstoneName').append(`<option value="${crownstone.id}" title="${crownstone.location}">${crownstone.name}</option>`);
+                    }
+                    // Highlight selected item
+                    $('#node-input-crownstoneName').val($('#node-input-crownstoneId').val());
+                });
+
+                $.getJSON('spheres/' + node.id, function (data) {
+                    // Generate drop-down list
+                    for (let sphere of data) {
+                        $('#node-input-sphereName2').append(`<option value="${sphere.id}">${sphere.name}</option>`);
+                    }
+                    // Highlight selected item
+                    $('#node-input-sphereName2').val($('#node-input-sphereId2').val());
+
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.status === 400) {
+                        // Show the tip to Deploy the code
+                        $('#tip-deploy').show();
+                    }
+                    else if (jqXHR.status === 401) {
+                        // Show the tip to add the Crownstone authenticate node
+                        $('#tip-authenticate').show();
+                    }
+                });
+            }
+
+            updateSectionPresence();
+            updateSectionSwitch();
+        },
+        oneditsave: function () {
+            // Put the chosen sphere in the hidden field
+            $('#node-input-sphereId1').val($('#node-input-sphereName1').val());
+            // Put the chosen location in the hidden field
+            $('#node-input-locationId').val($('#node-input-locationName').val());
+            // Put the chosen user in the hidden field
+            $('#node-input-userId').val($('#node-input-userName').val());
+
+            // Put the chosen sphere in the hidden field
+            $('#node-input-sphereId2').val($('#node-input-sphereName2').val());
+            // Put the chosen Crownstone in the hidden field
+            $('#node-input-crownstoneId').val($('#node-input-crownstoneName').val());
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="crownstone sse filter">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+
+    <div class="form-row form-row-eventType" id="input-eventType">
+        <label for="node-input-eventType"><i class="fa fa-bell"></i> Event type</label>
+        <select type="text" id="node-input-eventType" style="width: 250px;">
+            <option value="">Select event type</option>
+            <option value="presence">Presence event</option>
+            <option value="switch">Switch event</option>
+        </select>
+    </div>
+
+    <div id="section-presence" hidden>
+        <div class="form-row form-row-enterExit" id="input-enterExit">
+            <label for="node-input-enterExit"><i class="fa fa-sign-out"></i> Enter/Exit</label>
+            <select type="text" id="node-input-enterExit" style="width: 250px;">
+                <option value="">Enter or exit</option>
+                <option value="enter">Enter</option>
+                <option value="exit">Exit</option>
+            </select>
+        </div>
+
+        <div class="form-row form-row-sphereId1" id="input-sphereId1" hidden>
+            <input type="text" id="node-input-sphereId1">
+        </div>
+        <div class="form-row form-row-sphereName1" id="input-sphereName1">
+            <label for="node-input-sphereName1"><i class="fa fa-circle-o"></i> Sphere</label>
+            <select type="text" id="node-input-sphereName1" style="width: 250px;">
+                <option value="">All</option>
+            </select>
+        </div>
+
+        <div class="form-row form-row-locationId" id="input-locationId" hidden>
+            <input type="text" id="node-input-locationId">
+        </div>
+        <div class="form-row form-row-locationName">
+            <label for="node-input-locationName"><i class="fa fa-map-marker"></i> Location</label>
+            <select type="text" id="node-input-locationName" style="width: 250px;">
+                <option value="">All</option>
+            </select>
+        </div>
+    
+        <div class="form-row form-row-userId" id="input-userId" hidden>
+            <input type="text" id="node-input-userId">
+        </div>
+        <div class="form-row form-row-userName" id="input-userName">
+            <label for="node-input-userName"><i class="fa fa-user"></i> Username</label>
+            <select type="text" id="node-input-userName" style="width: 250px;">
+                <option value="">All</option>
+            </select>
+        </div>
+        <div class="form-tips"><b>Tip:</b> Before selecting a user, a sphere needs to be selected.</div>
+    </div>
+
+    <div id="section-switch" hidden>
+        <div class="form-row form-row-sphereId2" id="input-sphereId2" hidden>
+            <input type="text" id="node-input-sphereId2">
+        </div>
+        <div class="form-row form-row-sphereName2" id="input-sphereName2">
+            <label for="node-input-sphereName2"><i class="fa fa-circle-o"></i> Sphere</label>
+            <select type="text" id="node-input-sphereName2" style="width: 250px;">
+                <option value="">All</option>
+            </select>
+        </div>
+
+        <div class="form-row form-row-crownstoneId" id="input-crownstoneId" hidden>
+            <input type="text" id="node-input-crownstoneId">
+        </div>
+        <div class="form-row form-row-crownstoneName">
+            <label for="node-input-crownstoneName"><i class="fa fa-plug"></i> Crownstone name</label>
+            <select type="text" id="node-input-crownstoneName" style="width: 250px;">
+                <option value="">All</option>
+            </select>
+        </div>
+    </div>
+
+
+    <div class="form-tips" id="tip-authenticate" hidden><b>Tip:</b> Add the Crownstone authenticate node to the flow to authenticate the user and make use of this node.</div>
+    <div class="form-tips" id="tip-deploy" hidden><b>Tip:</b> Deploy the flow first before the lists can be created.</div>
+</script>
+
+<script type="text/html" data-help-name="crownstone sse filter">
+    <p>Filters events from the Crownstone SSE client node.</p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt class="optional">payload<span class="property-type">object</span></dt>
+        <dd>The event information.</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <ol class="node-ports">
+        <li>Standard output
+            <dl class="message-properties">
+                <dt>payload<span class="property-type">object</span></dt>
+                <dd>An object containing event information from the Crownstone SSE client node.</dd>
+            </dl>
+        </li>
+    </ol>
+
+    <h3>Details</h3>
+    <p>This node can be used to filter events that are given by the Crownstone SSE client node.
+        This means that the next node is only triggered when the event meets the configured conditions.
+    </p>
+    <p>The type of event can be configured with the properties menu.
+        Every type has more sub items to filter.
+    </p>
+    <p>When the received event matches the filter information, the object with all event information is sent with <code>msg.payload</code>.</p>
+    <p>This node is dependent on the Crownstone authenticate node.
+        Import the Crownstone authenticate node in the project to make use of the features of this node.
+    </p>
+
+    <h3>References</h3>
+    <ul>
+        <li><a href="https:crownstone.rocks/">Crownstone</a> - Crownstone website</li>
+        <li><a href="https://github.com/Danielvdd1/node-red-contrib-crownstone-rest-api/">GitHub</a> - The nodes GitHub repository</li>
+    </ul>
+</script>
