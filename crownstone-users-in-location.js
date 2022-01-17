@@ -6,7 +6,7 @@ module.exports = function (RED) {
         // Input field values
         var locationId = config.locationId;
 
-        // Retreive the cloud object from global context
+        // Retrieve the cloud object from global context
         var globalContext = node.context().global;
         var cloud;
 
@@ -20,10 +20,11 @@ module.exports = function (RED) {
         });
 
 
-        // Input event
+        // Input event. This code executes when the node gets triggered. 'msg' is the object that is received from the previous node.
         node.on('input', function (msg, send, done) {
 
             (async () => {
+                // Overwrite a default node property with an incoming value
                 if (msg.locationId !== undefined) {
                     locationId = msg.locationId;
                 }
@@ -74,10 +75,12 @@ module.exports = function (RED) {
                 if (e.statusCode === 401) {
                     msg.payload = e;
                     node.error("Authorization Required", msg);
+                    return;
                 }
                 else {
                     msg.payload = e;
                     node.error("There was a problem requesting users in the location", msg);
+                    return;
                 }
             });
         });

@@ -12,7 +12,7 @@ module.exports = function (RED) {
         var sphereId2 = config.sphereId2;
         var crownstoneId = config.crownstoneId;
 
-        // Retreive the cloud object from global context
+        // Retrieve the cloud object from global context
         var globalContext = node.context().global;
         var cloud;
 
@@ -26,11 +26,11 @@ module.exports = function (RED) {
         });
 
 
-        // Input event
+        // Input event. This code executes when the node gets triggered. 'msg' is the object that is received from the previous node.
         node.on('input', function (msg, send, done) {
             let event = msg.payload;
 
-            // Check if the message object contains has a payload
+            // Check if the message object has a payload
             if (event === undefined) {
                 return;
             }
@@ -79,8 +79,8 @@ module.exports = function (RED) {
                         if (sphereId2 !== "" && event.sphere.id !== sphereId2) {
                             break;
                         }
-                        //if (crownstoneId !== "" && event.switchData[].id !== crownstoneId){ // List of multiple Crownstones
-                        if (crownstoneId !== "" && event.switchData.find(d => d.id === crownstoneId) === undefined) {
+                        //if (crownstoneId !== "" && event.switchData[].id !== crownstoneId){
+                        if (crownstoneId !== "" && event.switchData.find(d => d.id === crownstoneId) === undefined) { // Find a Crownstone with the Crownstone id
                             break;
                         }
                         node.send(msg);
@@ -102,8 +102,6 @@ module.exports = function (RED) {
         });
     }
     RED.nodes.registerType("crownstone sse filter", CrownstoneSSEFilter);
-
-    // TODO: HTTP endpoints
 
     // This section is for the oneditprepare event in the browser to get a list of spheres.
     RED.httpAdmin.get("/spheres/:id", function (req, res) {

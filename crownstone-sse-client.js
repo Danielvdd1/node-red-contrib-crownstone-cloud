@@ -7,7 +7,7 @@ module.exports = function (RED) {
         const sseLib = require("crownstone-sse");
         let sse = new sseLib.CrownstoneSSE();
 
-        // Retreive the cloud object from global context
+        // Retrieve the cloud object from global context
         var globalContext = node.context().global;
         var cloud;
 
@@ -29,7 +29,6 @@ module.exports = function (RED) {
         }
 
         async function StartEventHandler() {
-            console.log("Debug SSE access token: " + sse.accessToken);
             try {
                 // Start the eventstream
                 await sse.start(eventHandler);
@@ -40,10 +39,12 @@ module.exports = function (RED) {
                 if (e.statusCode === 401) {
                     newMsg.payload = e;
                     node.error("Authorization Required", newMsg);
+                    return;
                 }
                 else {
                     newMsg.payload = e;
                     node.error("There was a problem connecting to the event server", newMsg);
+                    return;
                 }
             }
         }
@@ -66,11 +67,10 @@ module.exports = function (RED) {
                     return clearInterval(myInterval);
                 }
             }, 500); // Interval
-            // TODO: infinite loop when the user is not authenticated
         });
 
 
-        // Input event
+        // Input event. This code executes when the node gets triggered. 'msg' is the object that is received from the previous node.
         node.on('input', function (msg, send, done) {
             // Is the SSE connection open?
             let openConnection = (sse.eventSource !== undefined && sse.checkerInterval._destroyed === false);
@@ -81,7 +81,7 @@ module.exports = function (RED) {
                 // Start the SSE client when the stream is closed
                 if (!openConnection) {
                     if (sse.accessToken === null || sse.accessToken === undefined) {
-                        // TODO: Add warning?
+                        node.warn("Unable to start, no access token available", msg);
                         return;
                     }
                     if (sse.accessToken !== accessToken) { // Check if the token is changed
@@ -114,10 +114,11 @@ module.exports = function (RED) {
             }
         });
 
-        // Close event
+        // Close event. This code executes when the node gets deleted, disabled, or restarted.
         this.on('close', function (removed, done) {
             sse.stop();
             done();
+            return;
         });
     }
     RED.nodes.registerType("crownstone sse client", CrownstoneSSEClient);
