@@ -104,18 +104,18 @@ module.exports = function (RED) {
     RED.nodes.registerType("crownstone sse filter", CrownstoneSSEFilter);
 
     // This section is for the oneditprepare event in the browser to get a list of spheres.
-    RED.httpAdmin.get("/spheres/:id", function (req, res) {
-        var node = RED.nodes.getNode(req.params.id); // This is a reference to the currently deployed node in runtime. This does not work if the user just dragged the node on the workspace.
+    RED.httpAdmin.get("/spheres/:nodeId", function (req, res) {
+        var node = RED.nodes.getNode(req.params.nodeId); // This is a reference to the currently deployed node in runtime. This does not work if the user just dragged the node on the workspace.
         if (node === null) { // Node with the given id does not exist
             res.statusCode = 400;
-            res.end();
+            res.json({ "error": "Node with the given id does not exist" });
             return;
         }
         var globalContext = node.context().global;
         var cloud = globalContext.get("crownstoneCloud");
         if (cloud === undefined) { // Cloud object is not stored in global context
             res.statusCode = 401;
-            res.end();
+            res.json({ "error": "Cloud object is not available. You are unauthorized to make this request." });
             return;
         }
 
@@ -127,37 +127,25 @@ module.exports = function (RED) {
             let spheresMapped = spheres.map(sphere => ({ "id": sphere.id, "name": sphere.name }));
 
             // res.setHeader('Cache-Control', 'max-age=120, public');
+            res.statusCode = 200;
             res.json(spheresMapped);
+            return;
         })();
-        // .catch((e) => {
-        //     if (e.statusCode === 401){
-        //         // Authorization Required
-        //         res.statusCode = 401;
-        //         res.end();
-        //         return;
-        //     }
-        //     else{
-        //         // Other
-        //         // res.statusCode = 40;
-        //         res.end();
-        //         return;
-        //     }
-        // }); // await cloud.spheres(); works even when the token is wrong.
     });
 
     // This section is for the oneditprepare event in the browser to get a list of locations.
-    RED.httpAdmin.get("/locations/:id", function (req, res) {
-        var node = RED.nodes.getNode(req.params.id); // This is a reference to the currently deployed node in runtime. This does not work if the user just dragged the node on the workspace.
+    RED.httpAdmin.get("/locations/:nodeId", function (req, res) {
+        var node = RED.nodes.getNode(req.params.nodeId); // This is a reference to the currently deployed node in runtime. This does not work if the user just dragged the node on the workspace.
         if (node === null) { // Node with the given id does not exist
             res.statusCode = 400;
-            res.end();
+            res.json({ "error": "Node with the given id does not exist" });
             return;
         }
         var globalContext = node.context().global;
         var cloud = globalContext.get("crownstoneCloud");
         if (cloud === undefined) { // Cloud object is not stored in global context
             res.statusCode = 401;
-            res.end();
+            res.json({ "error": "Cloud object is not available. You are unauthorized to make this request." });
             return;
         }
 
@@ -175,30 +163,32 @@ module.exports = function (RED) {
             }
 
             // res.setHeader('Cache-Control', 'max-age=120, public');
+            res.statusCode = 200;
             res.json(locationsMapped);
+            return;
         })();
     });
 
     // This section is for the oneditprepare event in the browser to get a list of users.
-    RED.httpAdmin.get("/users/:id/:sphereId", function (req, res) {
-        var node = RED.nodes.getNode(req.params.id); // This is a reference to the currently deployed node in runtime. This does not work if the user just dragged the node on the workspace.
+    RED.httpAdmin.get("/users/:nodeId/:sphereId", function (req, res) {
+        var node = RED.nodes.getNode(req.params.nodeId); // This is a reference to the currently deployed node in runtime. This does not work if the user just dragged the node on the workspace.
         if (node === null) { // Node with the given id does not exist
             res.statusCode = 400;
-            res.end();
+            res.json({ "error": "Node with the given id does not exist" });
             return;
         }
         var globalContext = node.context().global;
         var cloud = globalContext.get("crownstoneCloud");
         if (cloud === undefined) { // Cloud object is not stored in global context
             res.statusCode = 401;
-            res.end();
+            res.json({ "error": "Cloud object is not available. You are unauthorized to make this request." });
             return;
         }
 
         let sphere = cloud.sphere(req.params.sphereId);
         if (sphere === undefined) { // Choosen sphere not present or accessable by this user
             res.statusCode = 403;
-            res.json([]);
+            res.json({ "error": "Choosen sphere not present or accessable by this user" });
             return;
         }
 
@@ -215,23 +205,25 @@ module.exports = function (RED) {
             }
 
             // res.setHeader('Cache-Control', 'max-age=120, public');
+            res.statusCode = 200;
             res.json(usersMapped);
+            return;
         })();
     });
 
     // This section is for the oneditprepare event in the browser to get a list of Crownstones.
-    RED.httpAdmin.get("/crownstones/:id", function (req, res) {
-        var node = RED.nodes.getNode(req.params.id); // This is a reference to the currently deployed node in runtime. This does not work if the user just dragged the node on the workspace.
+    RED.httpAdmin.get("/crownstones/:nodeId", function (req, res) {
+        var node = RED.nodes.getNode(req.params.nodeId); // This is a reference to the currently deployed node in runtime. This does not work if the user just dragged the node on the workspace.
         if (node === null) { // Node with the given id does not exist
             res.statusCode = 400;
-            res.end();
+            res.json({ "error": "Node with the given id does not exist" });
             return;
         }
         var globalContext = node.context().global;
         var cloud = globalContext.get("crownstoneCloud");
         if (cloud === undefined) { // Cloud object is not stored in global context
             res.statusCode = 401;
-            res.end();
+            res.json({ "error": "Cloud object is not available. You are unauthorized to make this request." });
             return;
         }
 
@@ -243,7 +235,9 @@ module.exports = function (RED) {
             let crownstonesMapped = crownstones.map(cs => ({ "id": cs.id, "name": cs.name, "location": cs.location.name, "dimming": cs.abilities.find(a => a.type === "dimming").enabled }));
 
             // res.setHeader('Cache-Control', 'max-age=120, public');
+            res.statusCode = 200;
             res.json(crownstonesMapped);
+            return;
         })();
     });
 }

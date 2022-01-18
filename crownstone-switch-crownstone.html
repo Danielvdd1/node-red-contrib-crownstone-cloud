@@ -18,7 +18,7 @@
             return this.name ? "node_label_italic" : "";
         },
         oneditprepare: function () {
-            var node = this;
+            var nodeId = this.id;
             var requestData;
 
             // Function to show or hide the corresponding input fields
@@ -33,7 +33,7 @@
                 }
             }
 
-            $.getJSON('crownstones/' + node.id, function (data) {
+            $.getJSON('crownstones/' + nodeId, function (data) {
                 requestData = data;
 
                 // Generate drop-down list

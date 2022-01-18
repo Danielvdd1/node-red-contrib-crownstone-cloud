@@ -88,18 +88,18 @@ module.exports = function (RED) {
     RED.nodes.registerType("crownstone users in location", CrownstoneUsersInLocation);
 
     // This section is for the oneditprepare event in the browser to get a list of locations.
-    RED.httpAdmin.get("/locations/:id", function (req, res) {
-        var node = RED.nodes.getNode(req.params.id); // This is a reference to the currently deployed node in runtime. This does not work if the user just dragged the node on the workspace.
+    RED.httpAdmin.get("/locations/:nodeId", function (req, res) {
+        var node = RED.nodes.getNode(req.params.nodeId); // This is a reference to the currently deployed node in runtime. This does not work if the user just dragged the node on the workspace.
         if (node === null) { // Node with the given id does not exist
             res.statusCode = 400;
-            res.end();
+            res.json({ "error": "Node with the given id does not exist" });
             return;
         }
         var globalContext = node.context().global;
         var cloud = globalContext.get("crownstoneCloud");
         if (cloud === undefined) { // Cloud object is not stored in global context
             res.statusCode = 401;
-            res.end();
+            res.json({ "error": "Cloud object is not available. You are unauthorized to make this request." });
             return;
         }
 
@@ -117,7 +117,9 @@ module.exports = function (RED) {
             }
 
             // res.setHeader('Cache-Control', 'max-age=120, public');
+            res.statusCode = 200;
             res.json(locationsMapped);
+            return;
         })();
     });
 }

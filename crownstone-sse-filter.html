@@ -23,7 +23,7 @@
             return this.name ? "node_label_italic" : "";
         },
         oneditprepare: function () {
-            var node = this;
+            var nodeId = this.id;
 
             function showEventProperties(eventType) {
                 switch (eventType) {
@@ -58,7 +58,7 @@
 
             function updateSectionPresence() {
 
-                $.getJSON('locations/' + node.id, function (data) {
+                $.getJSON('locations/' + nodeId, function (data) {
                     // Generate drop-down list
                     $('#node-input-locationName').empty();
                     $('#node-input-locationName').append(`<option value="">All</option>`);
@@ -73,7 +73,7 @@
                     if (sphereId === "") { // Request not possible when all spheres are selected
                         return;
                     }
-                    $.getJSON('users/' + node.id + '/' + sphereId, function (data) {
+                    $.getJSON('users/' + nodeId + '/' + sphereId, function (data) {
                         // Generate drop-down list
                         $('#node-input-userName').empty();
                         $('#node-input-userName').append(`<option value="">All</option>`);
@@ -85,7 +85,7 @@
                     });
                 }
 
-                $.getJSON('spheres/' + node.id, function (data) {
+                $.getJSON('spheres/' + nodeId, function (data) {
                     // Generate drop-down list
                     for (let sphere of data) {
                         $('#node-input-sphereName1').append(`<option value="${sphere.id}">${sphere.name}</option>`);
@@ -117,7 +117,7 @@
 
             function updateSectionSwitch() {
 
-                $.getJSON('crownstones/' + node.id, function (data) {
+                $.getJSON('crownstones/' + nodeId, function (data) {
                     // Generate drop-down list
                     $('#node-input-crownstoneName').empty();
                     $('#node-input-crownstoneName').append(`<option value="">All</option>`);
@@ -128,7 +128,7 @@
                     $('#node-input-crownstoneName').val($('#node-input-crownstoneId').val());
                 });
 
-                $.getJSON('spheres/' + node.id, function (data) {
+                $.getJSON('spheres/' + nodeId, function (data) {
                     // Generate drop-down list
                     for (let sphere of data) {
                         $('#node-input-sphereName2').append(`<option value="${sphere.id}">${sphere.name}</option>`);

@@ -16,9 +16,9 @@
             return this.name ? "node_label_italic" : "";
         },
         oneditprepare: function () {
-            var node = this;
+            var nodeId = this.id;
 
-            $.getJSON('locations/' + node.id, function (data) {
+            $.getJSON('locations/' + nodeId, function (data) {
                 // Generate drop-down list
                 for (let location of data) {
                     $('#node-input-locationName').append(`<option value="${location.id}" title="${location.sphereName}">${location.name}</option>`);
