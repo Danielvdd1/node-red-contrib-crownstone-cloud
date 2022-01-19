@@ -1,52 +1,64 @@
 # Node-RED Crownstone integration
+![Crownstone logo](/icons/crownstone_logo_black.svg#gh-dark-mode-only)
+![Crownstone logo](/icons/crownstone_logo_white.svg#gh-light-mode-only)
 
-A set of [Node-RED](http://nodered.org) nodes to make use of Crownstones. The nodes use the Crownstone REST API to cummunicate with the [Crownstone cloud](http://cloud.crownstone.rocks).
-Visit our [website](http://crownstone.rocks) for more information about our product.
+<img src="/icons/crownstone_logo_black.svg#gh-light-mode-only" alt="Crownstone logo dark" width="50%"/><img src="/icons/crownstone_logo_white.svg#gh-dark-mode-only" alt="Crownstone logo light" width="50%"/><img src="/images/node-red-icon.svg" alt="drawing" width="50%"/>
+
+
+## About
+This repository contains Node-RED nodes that make it possible to use Crownstone features in Node-RED. The nodes communicate with the Crownstone Cloud.
+
+[Crownstone](http://crownstone.rocks) is a company that produces a smart plug that is built into the wall. This device, called Crownstone, makes it possible to switch devices, measure power usage and localize users. To extend the functionality, integrations with other smart home products are made.
+
+[Node-RED](http://nodered.org) is opensource software that makes it easy to program with hardware, APIs, and other online services. It can be installed on almost any operating system like Windows, MacOS, Linux. So, it can also be installed on a Raspberry Pi or a server. A node.js installation is required. The program environment is available via a browser. Node-RED is often used by hobbyists that work with home automation. It is very easy to use Node-RED because the programming is done with nodes.
+
+Some use cases:
+- Someone wants to use social media to control a device.
+- Someone wants to do an action with their smart home when someone gets home.
+- Someone wants to keep track of how busy it is in a location and create a graph from it.
+- Someone made a dashboard in Node-RED to control their home and wants to add Crownstones.
+This and more is possible with the wide support of nodes available in Node-RED.
+
+
+The functionalities from the Crownstones can be used by communicating via Bluetooth or by communicating with the cloud. With Bluetooth is the connection faster than via the cloud but the Cloud is reachable from everywhere in the world. Power usage data is only available via Bluetooth.
+
+
 
 ## Features
+This repository contains nodes to make use of the Crownstones using the Crownstone Cloud. These nodes make use of the REST API and Server-Sent Events. Measuring power usage is not possible via the cloud.
+
+The nodes in this repository make it possible to do the following things:
  - Switch and dim Crownstones
- - Localization
+ - Switch all Crownstones in a location
+ - Get location of a user
+ - Get a list of users in a location
+ - Receive events
+ - Filter events (Switch and presence events)
+
 
 ## Install
+Follow these [instructions](https://nodered.org/docs/getting-started/local) for instructions on how to install Node-RED. An installation of Node.js is required.
+
+### Automatically
 To install, either use the manage palette option in the editor, or run the following command in your Node-RED user directory - typically `~/.node-red`
 
         cd ~/.node-red
-        npm install node-red-contrib-crownstone-cloud
+        npm install node-red-contrib-crownstone-rest-api
+
+### Manually
+Clone the code from this repository. Install the nodes by running the following command in your Node-RED user directory - typically `~/.node-red`
+
+        cd ~/.node-red
+        npm install <path to the cloned poroject folder>
 
 
-## Usage
+## Included nodes
 
-### Authentication node
-Authenticates the user.
-#### Input
- - Email
- - Password
+- **Authentication node**: Authenticates the user.
+- **Switch Crownstone node**: Switch or dim a Crownstone.
+- **Localize user node**: Get the location of a user.
+- **Users in location node**: Get a list of users in a location.
+- **Switch Crownstones in location node**: Switch all Crownstones in a location.
+- **SSE client node**: Receive events from the cloud.
+- **SSE filter node**: Filter incoming events from the SSE client node.
 
-### Switch Crownstone node
-Switch or dim a Crownstone.
-#### Input
- - Crownstone name or `msg.crownstoneId` of type *string*
-
-Depending on if the Crownstone is dimmable:
- - New state or `msg.onOff` of type *boolean*
- - Dim percentage or `msg.dimPercentage` of type *string*
-
-### Localize user node
-Get the location of a user.
-#### Input
- - Sphere or `msg.sphereId` of type *string*
- - Username or `msg.userId` of type *string*
-#### Output
- - `msg.payload` containing `{"locationId":string, "locationName":string}`
-
-### Users in location node
-Get a list of users in a location.
-#### Input
- - Sphere or `msg.sphereId` of type *string*
- - Location or `msg.locationId` of type *string*
-#### Output
- - `msg.payload` containing a list of users `[{"userId":string, "firstName":string, "lastName":string},...]`
-
-
-## Disclaimer
-This repository is in the test phase.

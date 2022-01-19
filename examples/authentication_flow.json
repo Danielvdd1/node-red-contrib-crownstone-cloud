@@ -1,0 +1,191 @@
+[
+    {
+        "id": "b7bfd86efe34a593",
+        "type": "inject",
+        "z": "8fb7b3833e30a1fb",
+        "name": "Start",
+        "props": [
+            {
+                "p": "start",
+                "v": "true",
+                "vt": "bool"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "str",
+        "x": 170,
+        "y": 260,
+        "wires": [
+            [
+                "0bd8eb44a908c53e"
+            ]
+        ]
+    },
+    {
+        "id": "9a341c8c0997cad9",
+        "type": "inject",
+        "z": "8fb7b3833e30a1fb",
+        "name": "Stop",
+        "props": [
+            {
+                "p": "stop",
+                "v": "true",
+                "vt": "bool"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 170,
+        "y": 300,
+        "wires": [
+            [
+                "0bd8eb44a908c53e"
+            ]
+        ]
+    },
+    {
+        "id": "0bd8eb44a908c53e",
+        "type": "crownstone sse client",
+        "z": "8fb7b3833e30a1fb",
+        "name": "",
+        "x": 360,
+        "y": 260,
+        "wires": [
+            [
+                "ebec471d71807f49"
+            ]
+        ]
+    },
+    {
+        "id": "8ed30d33e9475077",
+        "type": "inject",
+        "z": "8fb7b3833e30a1fb",
+        "name": "Manually re-authenticate",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 230,
+        "y": 160,
+        "wires": [
+            [
+                "3cb411b334631c3c"
+            ]
+        ]
+    },
+    {
+        "id": "1594dc8816c6b9d0",
+        "type": "switch",
+        "z": "8fb7b3833e30a1fb",
+        "name": "Filter \"Authorization Required\" errors",
+        "property": "error.message",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "Authorization Required",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 430,
+        "y": 120,
+        "wires": [
+            [
+                "581d9df0ca4976de",
+                "3cb411b334631c3c"
+            ]
+        ]
+    },
+    {
+        "id": "581d9df0ca4976de",
+        "type": "debug",
+        "z": "8fb7b3833e30a1fb",
+        "name": "Only \"Authorization Required\" errors",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "error",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 770,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "9df2ec8834c5330c",
+        "type": "catch",
+        "z": "8fb7b3833e30a1fb",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 180,
+        "y": 120,
+        "wires": [
+            [
+                "1594dc8816c6b9d0",
+                "f955561cb6738bfc"
+            ]
+        ]
+    },
+    {
+        "id": "3cb411b334631c3c",
+        "type": "crownstone authenticate",
+        "z": "8fb7b3833e30a1fb",
+        "name": "",
+        "x": 730,
+        "y": 160,
+        "wires": [
+            [
+                "0bd8eb44a908c53e"
+            ]
+        ]
+    },
+    {
+        "id": "f955561cb6738bfc",
+        "type": "debug",
+        "z": "8fb7b3833e30a1fb",
+        "name": "All errors",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 340,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "ebec471d71807f49",
+        "type": "debug",
+        "z": "8fb7b3833e30a1fb",
+        "name": "Print all events in the debug panel",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 640,
+        "y": 260,
+        "wires": []
+    }
+]
