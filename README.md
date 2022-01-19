@@ -1,7 +1,4 @@
 # Node-RED Crownstone integration
-![Crownstone logo](/icons/crownstone_logo_black.svg#gh-dark-mode-only)
-![Crownstone logo](/icons/crownstone_logo_white.svg#gh-light-mode-only)
-
 <img src="/icons/crownstone_logo_black.svg#gh-light-mode-only" alt="Crownstone logo dark" width="50%"/><img src="/icons/crownstone_logo_white.svg#gh-dark-mode-only" alt="Crownstone logo light" width="50%"/><img src="/images/node-red-icon.svg" alt="drawing" width="50%"/>
 
 
@@ -19,9 +16,7 @@ Some use cases:
 - Someone made a dashboard in Node-RED to control their home and wants to add Crownstones.
 This and more is possible with the wide support of nodes available in Node-RED.
 
-
 The functionalities from the Crownstones can be used by communicating via Bluetooth or by communicating with the cloud. With Bluetooth is the connection faster than via the cloud but the Cloud is reachable from everywhere in the world. Power usage data is only available via Bluetooth.
-
 
 
 ## Features
@@ -49,7 +44,7 @@ To install, either use the manage palette option in the editor, or run the follo
 Clone the code from this repository. Install the nodes by running the following command in your Node-RED user directory - typically `~/.node-red`
 
         cd ~/.node-red
-        npm install <path to the cloned poroject folder>
+        npm install <path to the cloned project folder>
 
 
 ## Included nodes
@@ -62,3 +57,9 @@ Clone the code from this repository. Install the nodes by running the following 
 - **SSE client node**: Receive events from the cloud.
 - **SSE filter node**: Filter incoming events from the SSE client node.
 
+
+----
+
+![dashboard](/images/use_case_dashboard.png)
+
+![Switch devices depending on the presence of a user](/images/use_case_sse.png)

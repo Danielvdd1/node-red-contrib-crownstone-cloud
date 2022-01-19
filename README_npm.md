@@ -9,7 +9,7 @@ The functionalities from the Crownstones can be used by communicating via Blueto
 
 
 ## Features
-The nodes in this module use the **Crownstone cloud**.
+This repository contains nodes to make use of the Crownstones using the Crownstone Cloud. These nodes make use of the REST API and Server-Sent Events. Measuring power usage is not possible via the cloud.
 
  - Switch and dim Crownstones
  - Localization

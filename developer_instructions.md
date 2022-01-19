@@ -29,12 +29,13 @@ In the background a Crownstone cloud object is created and an access token is re
 
 
 ## Testing
-Tests are done with manual tests.
+The nodes are tested with handwritten, manual tests. Automated tests are possible with Node-RED. Unit tests only test the working of a node and not test the graphical part of a node.
 
-Some unit tests are made.
+Some automated tests are made. These test scripts are located in the 'test/' directory.
+
+Run the tests:
 Open a terminal and go the main folder of this repository. Run the tests with 'npm test'.
 
-Unit tests only test the working of a node and not test the graphical part of a node.
 
 ## HTTP endpoints
 When the properties menu of a node is opened, the node in the browser receives an oneditprepare event. This calls a function that can be used to prepare the HTML of the properties menu. This code runs in the browser. In the case of some Crownstone nodes, the lists need to be filled with items. These items need to be requested from the Cloud. The node code in the browser does not have access to the cloud object. This is solved by making an http endpoint with the httpAdmin feature to give the list of items.

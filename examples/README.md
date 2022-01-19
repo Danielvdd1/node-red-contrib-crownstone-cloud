@@ -2,10 +2,10 @@
 
 Flows can be exported as json. This json text can be shared and imported on other Node-RED installations.
 
-To import a flow, go to the hamburger menu in Node-RED and click on import. Enter the json text or select a json file and press on import.
+To import an example flow, go to the hamburger menu in Node-RED and click on import. Go to examples and select an exasmple flow from the node-red-contrib-crownstone-cloud repository. Press on import and place the flow in the editor.
 
 
-## Architecture
+## Authentication flow
 Authenticates the user and starts the event stream.
 
 Enter credentials for the [Crownstone cloud](https://cloud.crownstone.rocks/) in the authentication node. After deploying, the user gets automatically authenticated.
