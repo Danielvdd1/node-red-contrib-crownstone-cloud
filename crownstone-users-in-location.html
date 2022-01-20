@@ -1,0 +1,113 @@
+<script type="text/javascript">
+    RED.nodes.registerType('crownstone users in location', {
+        category: 'Crownstone',
+        color: '#FFFFFF',
+        defaults: {
+            name: { value: "" },
+            locationId: { value: "" }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "icons/crownstone_logo_black.svg",
+        label: function () {
+            return this.name || "Crownstone users in location";
+        },
+        labelStyle: function () {
+            return this.name ? "node_label_italic" : "";
+        },
+        oneditprepare: function () {
+            var nodeId = this.id;
+
+            $.getJSON('locations/' + nodeId, function (data) {
+                // Generate drop-down list
+                for (let location of data) {
+                    $('#node-input-locationName').append(`<option value="${location.id}" title="${location.sphereName}">${location.name}</option>`);
+                }
+                // Highlight selected item
+                $('#node-input-locationName').val($('#node-input-locationId').val());
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status === 400) {
+                    // Show the tip to Deploy the code
+                    $('#tip-deploy').show();
+                }
+                else if (jqXHR.status === 401) {
+                    // Show the tip to add the Crownstone authenticate node
+                    $('#tip-authenticate').show();
+                }
+            });
+        },
+        oneditsave: function () {
+            // Put the chosen location in the hidden field
+            $('#node-input-locationId').val($('#node-input-locationName').val());
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="crownstone users in location">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+
+    <div class="form-row form-row-locationId" id="input-locationId" hidden>
+        <input type="text" id="node-input-locationId">
+    </div>
+    <div class="form-row form-row-locationName">
+        <label for="node-input-locationName"><i class="fa fa-map-marker"></i> Location</label>
+        <select type="text" id="node-input-locationName" style="width: 250px;">
+        </select>
+    </div>
+
+    <div class="form-tips" id="tip-authenticate" hidden><b>Tip:</b> Add the Crownstone authenticate node to the flow to authenticate the user and make use of this node.</div>
+    <div class="form-tips" id="tip-deploy" hidden><b>Tip:</b> Deploy the flow first before the list can be created.</div>
+</script>
+
+<script type="text/html" data-help-name="crownstone users in location">
+    <p>Get a list of users in a location with the Crownstone cloud.</p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt class="optional">sphereId<span class="property-type">string</span></dt>
+        <dd>The id of the sphere.</dd>
+        <dt class="optional">locationId<span class="property-type">string</span></dt>
+        <dd>The id of the location.</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <ol class="node-ports">
+        <li>Standard output
+            <dl class="message-properties">
+                <dt>payload <span class="property-type">object</span></dt>
+                <dd>An object containing a list of user information. <code>[{"userId":string, "firstName":string, "lastName":string}, ...]</code></dd>
+            </dl>
+        </li>
+        <li>Authorization required error
+            <dl class="message-properties">
+                <dt>payload<span class="property-type">object</span></dt>
+                <dd>The standard error of the command.</dd>
+            </dl>
+        </li>
+        <li>Standard error
+            <dl class="message-properties">
+                <dt>payload<span class="property-type">object</span></dt>
+                <dd>The standard error of the command.</dd>
+            </dl>
+        </li>
+    </ol>
+
+    <h3>Details</h3>
+    <p>This node can be used to get a list of users in a location.</p>
+    <p>The location can be configured with the properties menu.
+        To set the location on the go, the id of the user can be set in <code>msg.locationId</code>.
+    </p>
+    <p>This node returns a list of user information in <code>msg.payload</code>.</p>
+    <p>This node is dependent on the Crownstone authenticate node.
+        Import the Crownstone authenticate node in the project to make use of the features of this node.
+    </p>
+
+    <h3>References</h3>
+    <ul>
+        <li><a href="https://crownstone.rocks/">Crownstone</a> - Crownstone website</li>
+        <li><a href="https://github.com/Danielvdd1/node-red-contrib-crownstone-cloud/">GitHub</a> - The nodes GitHub repository</li>
+    </ul>
+</script>
